@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="navyGrad" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1A2C47"/>
+      <stop offset="100%" stop-color="#0D1726"/>
+    </linearGradient>
+    <linearGradient id="crimsonGrad" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D13B3B"/>
+      <stop offset="100%" stop-color="#9A1F24"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="16" y1="12" x2="104" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E5BE67"/>
+      <stop offset="100%" stop-color="#B98A2C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Gold Laurel Wreath -->
+  <path d="M22 84 C11 66 13 40 28 24" stroke="url(#goldGrad)" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M98 84 C109 66 107 40 92 24" stroke="url(#goldGrad)" stroke-width="3.2" stroke-linecap="round"/>
+  <g fill="url(#goldGrad)">
+    <ellipse cx="16" cy="58" rx="4.5" ry="2.2" transform="rotate(-35 16 58)"/>
+    <ellipse cx="17" cy="44" rx="4.5" ry="2.2" transform="rotate(-20 17 44)"/>
+    <ellipse cx="22" cy="32" rx="4.2" ry="2.1" transform="rotate(-5 22 32)"/>
+    <ellipse cx="19" cy="72" rx="4.5" ry="2.2" transform="rotate(-52 19 72)"/>
+    <ellipse cx="29" cy="86" rx="4.5" ry="2.2" transform="rotate(-68 29 86)"/>
+
+    <ellipse cx="104" cy="58" rx="4.5" ry="2.2" transform="rotate(35 104 58)"/>
+    <ellipse cx="103" cy="44" rx="4.5" ry="2.2" transform="rotate(20 103 44)"/>
+    <ellipse cx="98" cy="32" rx="4.2" ry="2.1" transform="rotate(5 98 32)"/>
+    <ellipse cx="101" cy="72" rx="4.5" ry="2.2" transform="rotate(52 101 72)"/>
+    <ellipse cx="91" cy="86" rx="4.5" ry="2.2" transform="rotate(68 91 86)"/>
+  </g>
+
+  <!-- Academic 4-Quadrant Shield -->
+  <clipPath id="shieldClip">
+    <path d="M60 12 L94 24 V56 C94 80 79 97 60 107 C41 97 26 80 26 56 V24 L60 12 Z"/>
+  </clipPath>
+
+  <g clip-path="url(#shieldClip)">
+    <!-- Top-Left Navy -->
+    <rect x="24" y="10" width="36" height="48" fill="url(#navyGrad)"/>
+    <!-- Top-Right Crimson -->
+    <rect x="60" y="10" width="36" height="48" fill="url(#crimsonGrad)"/>
+    <!-- Bottom-Left Crimson -->
+    <rect x="24" y="58" width="36" height="52" fill="url(#crimsonGrad)"/>
+    <!-- Bottom-Right Navy -->
+    <rect x="60" y="58" width="36" height="52" fill="url(#navyGrad)"/>
+
+    <!-- Inner Dividers -->
+    <line x1="60" y1="12" x2="60" y2="107" stroke="#F6F8FA" stroke-width="2"/>
+    <line x1="26" y1="58" x2="94" y2="58" stroke="#F6F8FA" stroke-width="2"/>
+
+    <!-- Q1: Graduation Cap -->
+    <path d="M44 33 L54 38 L44 43 L34 38 Z" fill="#FFFFFF"/>
+    <path d="M38 40.5 V45 C38 46.8 40.7 48 44 48 C47.3 48 50 46.8 50 45 V40.5" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+    <line x1="53" y1="38.5" x2="53" y2="45" stroke="#E5BE67" stroke-width="1.6" stroke-linecap="round"/>
+
+    <!-- Q2: Open Book -->
+    <path d="M66 36 C70 34.5 74 35 76 37.2 C78 35 82 34.5 86 36 V47 C82 45.8 78 46.2 76 48 C74 46.2 70 45.8 66 47 Z" fill="#FFFFFF" opacity="0.95"/>
+    <line x1="76" y1="37" x2="76" y2="48" stroke="#9A1F24" stroke-width="1.4"/>
+
+    <!-- Q3: Microscope -->
+    <path d="M43 66 L48 75" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    <path d="M48 72 C52 74 52 80 47 83 H39" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <line x1="38" y1="86" x2="51" y2="86" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+    <line x1="40" y1="79" x2="47" y2="79" stroke="#E5BE67" stroke-width="1.8" stroke-linecap="round"/>
+
+    <!-- Q4: Globe -->
+    <circle cx="75" cy="75" r="8.5" stroke="#FFFFFF" stroke-width="1.8" fill="none"/>
+    <ellipse cx="75" cy="75" rx="4" ry="8.5" stroke="#FFFFFF" stroke-width="1.4" fill="none"/>
+    <line x1="66.5" y1="75" x2="83.5" y2="75" stroke="#FFFFFF" stroke-width="1.4"/>
+  </g>
+
+  <!-- Crisp Gold & White Shield Border -->
+  <path d="M60 12 L94 24 V56 C94 80 79 97 60 107 C41 97 26 80 26 56 V24 L60 12 Z" stroke="url(#goldGrad)" stroke-width="3.2" fill="none"/>
+</svg>

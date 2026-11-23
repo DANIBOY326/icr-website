@@ -1,0 +1,121 @@
+/**
+ * Shared UI Controller: Header scroll elevation, mobile drawer, auth status indicator,
+ * toast notifications, and mailing list subscription handler across all ICR pages.
+ */
+import { ICR, submitNetlifyForm } from "./api.js";
+
+export function escapeHtml(str = "") {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+export function showToast(message, type = "info") {
+  let stack = document.getElementById("icr-toast-stack");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.id = "icr-toast-stack";
+    stack.className = "toast-stack";
+    stack.setAttribute("aria-live", "polite");
+    document.body.appendChild(stack);
+  }
+  const el = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.textContent = message;
+  stack.appendChild(el);
+  setTimeout(() => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(8px)";
+    el.style.transition = "all 0.2s ease";
+    setTimeout(() => el.remove(), 220);
+  }, 4200);
+}
+
+export function getInitials(name = "ICR") {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "IC";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function initHeaderAndDrawer() {
+  const header = document.querySelector(".site-header");
+  if (header) {
+    const onScroll = () => header.classList.toggle("scrolled", window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
+  const menuBtn = document.getElementById("mobile-menu-btn");
+  const drawer = document.getElementById("mobile-drawer");
+  if (menuBtn && drawer) {
+    const toggle = (force) => {
+      const open = typeof force === "boolean" ? force : !drawer.classList.contains("open");
+      drawer.classList.toggle("open", open);
+      menuBtn.setAttribute("aria-expanded", String(open));
+      document.body.style.overflow = open ? "hidden" : "";
+    };
+    menuBtn.addEventListener("click", () => toggle());
+    drawer.addEventListener("click", (e) => {
+      if (e.target === drawer) toggle(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && drawer.classList.contains("open")) toggle(false);
+    });
+  }
+}
+
+async function initAuthHeaderBadge() {
+  const portalBtns = document.querySelectorAll("[data-portal-btn]");
+  if (!portalBtns.length) return;
+  try {
+    const res = await ICR.getMe();
+    if (res.authenticated && res.user) {
+      const firstName = res.user.fullName.split(" ")[0];
+      portalBtns.forEach((btn) => {
+        btn.textContent = `${firstName} · Portal`;
+        btn.classList.remove("btn-outline");
+        btn.classList.add("btn-navy");
+      });
+    }
+  } catch {
+    // ignore
+  }
+}
+
+function initNewsletterForms() {
+  document.querySelectorAll("[data-newsletter-form]").forEach((form) => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const input = form.querySelector('input[type="email"]');
+      const btn = form.querySelector('button[type="submit"]');
+      const email = input?.value?.trim() || "";
+      if (!email) return;
+
+      const origText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Subscribing...";
+
+      try {
+        await submitNetlifyForm(form);
+        const res = await ICR.subscribeNewsletter(email);
+        showToast(res.message || "Subscribed to ICR Research Digest!", "success");
+        form.reset();
+      } catch (err) {
+        showToast(err.message || "Could not subscribe right now.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = origText;
+      }
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initHeaderAndDrawer();
+  initAuthHeaderBadge();
+  initNewsletterForms();
+});

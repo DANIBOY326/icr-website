@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upcoming Events — Innovative Campus Researchers (ICR)</title>
+  <meta name="description" content="Register for the First Campus Mega Research Summit, monthly methodology clinics, and academic publishing workshops hosted by Innovative Campus Researchers (ICR)." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/index.html" class="brand-link">
+        <img src="/favicon.svg" alt="ICR Shield Crest" class="brand-crest" width="44" height="44" />
+        <span class="brand-text">
+          <span class="brand-acronym">ICR · Est. 2026</span>
+          <span class="brand-name">Innovative Campus Researchers</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/research.html" class="nav-link">Projects &amp; Research</a>
+        <a href="/events.html" class="nav-link active">Upcoming Events</a>
+        <a href="/community.html" class="nav-link">Community</a>
+        <a href="/constitution.html" class="nav-link">Constitution</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="/portal.html" class="btn btn-outline btn-sm" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary btn-sm btn-pill">Join ICR</a>
+      </div>
+      <button type="button" id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-panel">
+      <a href="/index.html" class="nav-link">Home</a>
+      <a href="/research.html" class="nav-link">Projects &amp; Research</a>
+      <a href="/events.html" class="nav-link active">Upcoming Events</a>
+      <a href="/community.html" class="nav-link">Community &amp; Executives</a>
+      <a href="/constitution.html" class="nav-link">Our Constitution</a>
+      <div class="mobile-drawer-actions">
+        <a href="/portal.html" class="btn btn-outline" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary">Join ICR</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-eyebrow"><span class="dot"></span>Summits, Clinics &amp; Workshops</div>
+        <h1>Upcoming Events</h1>
+        <p>Join flagship summits, hands-on AI research workshops, and monthly peer-review clinics designed to elevate campus research quality.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div id="featured-summit" style="margin-bottom:48px;"></div>
+
+        <div class="section-header">
+          <div class="kicker">Recurring Series</div>
+          <h2 class="section-title">Workshops &amp; Research Clinics</h2>
+        </div>
+        <div id="upcoming-events-grid" class="grid-2"></div>
+      </div>
+    </section>
+
+    <section class="section section-tint" id="rsvp-section">
+      <div class="container rsvp-layout">
+        <div style="display:grid; gap:20px;">
+          <div>
+            <div class="kicker">Instant Seat Reservation</div>
+            <h2 class="section-title">Register for an ICR Event</h2>
+            <p class="section-desc">Reserve your seat to receive calendar links, workshop worksheets, speaker notes, and direct community announcements.</p>
+          </div>
+
+          <div class="card" style="background:var(--navy-950); color:#ffffff; border-color:var(--navy-800); gap:14px;">
+            <span class="badge badge-gold" style="align-self:flex-start; background:rgba(229,190,103,0.18); color:var(--gold-400);">Live Community Hub</span>
+            <h3 style="color:#ffffff;">Join the Summit WhatsApp Community</h3>
+            <p style="color:rgba(255,255,255,0.78); font-size:0.93rem;">
+              Connect immediately with fellow student researchers, lecturers, and summit speakers ahead of the session.
+            </p>
+            <div>
+              <a href="https://chat.whatsapp.com/DAj9PPNiuiGDWyl37SsImX" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">Open WhatsApp Group →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div id="rsvp-alert" class="alert" role="alert"></div>
+          <form id="event-rsvp-form" name="icr-event-rsvp" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="icr-event-rsvp" />
+            <p class="sr-only"><label>Don't fill this out: <input name="bot-field" /></label></p>
+
+            <div class="form-grid">
+              <div class="form-field full">
+                <label class="form-label" for="rsvp-event-select">Select Event <span class="req">*</span></label>
+                <select id="rsvp-event-select" name="eventId" class="form-select" required></select>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="rsvp-name">Full Name <span class="req">*</span></label>
+                <input id="rsvp-name" name="fullName" type="text" class="form-input" placeholder="e.g., Adebayo Blessing" required />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="rsvp-email">Email Address <span class="req">*</span></label>
+                <input id="rsvp-email" name="email" type="email" class="form-input" placeholder="you@university.edu" required />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="rsvp-institution">Campus / Institution <span class="req">*</span></label>
+                <input id="rsvp-institution" name="institution" type="text" class="form-input" placeholder="University or College name" required />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="rsvp-track">Primary Learning Track</label>
+                <select id="rsvp-track" name="trackInterest" class="form-select">
+                  <option value="AI-Powered Research">AI-Powered Research &amp; Literature Discovery</option>
+                  <option value="Academic Writing Mastery">Academic Writing &amp; Referencing</option>
+                  <option value="Data Analysis & Visualization">Data Analysis &amp; Visualization</option>
+                  <option value="Research Productivity">Research Productivity Workflows</option>
+                  <option value="Ethical AI Practices">Ethical AI Practices &amp; Integrity</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; margin-top:24px;">
+              <a href="https://chat.whatsapp.com/DAj9PPNiuiGDWyl37SsImX" target="_blank" rel="noopener noreferrer" style="font-size:0.88rem; font-weight:600; color:var(--navy-800);">Also join the Summit WhatsApp group →</a>
+              <button type="submit" class="btn btn-primary btn-lg">Confirm Event Registration</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:0; border:0;">
+        <span>© 2026 Innovative Campus Researchers (ICR). All Rights Reserved.</span>
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+          <a href="/index.html">Home</a>
+          <a href="/research.html">Projects &amp; Research</a>
+          <a href="/community.html">Community</a>
+          <a href="/join.html">Join ICR</a>
+          <a href="mailto:icr2026@gmail.com">icr2026@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/js/app.js"></script>
+  <script type="module" src="/assets/js/events.js"></script>
+</body>
+</html>

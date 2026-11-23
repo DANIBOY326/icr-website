@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join ICR Membership — Innovative Campus Researchers</title>
+  <meta name="description" content="Apply for membership in Innovative Campus Researchers (ICR) to join collaborative research projects, methodology workshops, mentorship clinics, and peer-reviewed publishing." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/index.html" class="brand-link">
+        <img src="/favicon.svg" alt="ICR Shield Crest" class="brand-crest" width="44" height="44" />
+        <span class="brand-text">
+          <span class="brand-acronym">ICR · Est. 2026</span>
+          <span class="brand-name">Innovative Campus Researchers</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/research.html" class="nav-link">Projects &amp; Research</a>
+        <a href="/events.html" class="nav-link">Upcoming Events</a>
+        <a href="/community.html" class="nav-link">Community</a>
+        <a href="/constitution.html" class="nav-link">Constitution</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="/portal.html" class="btn btn-outline btn-sm" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary btn-sm btn-pill">Join ICR</a>
+      </div>
+      <button type="button" id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-panel">
+      <a href="/index.html" class="nav-link">Home</a>
+      <a href="/research.html" class="nav-link">Projects &amp; Research</a>
+      <a href="/events.html" class="nav-link">Upcoming Events</a>
+      <a href="/community.html" class="nav-link">Community &amp; Executives</a>
+      <a href="/constitution.html" class="nav-link">Our Constitution</a>
+      <div class="mobile-drawer-actions">
+        <a href="/portal.html" class="btn btn-outline" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary">Join ICR</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-eyebrow"><span class="dot"></span>Open Non-Profit Membership</div>
+        <h1>Join the ICR Research Community</h1>
+        <p>Step into a supportive cross-campus network of students, early-career scholars, and mentors committed to inquiry, innovation, and real-world impact.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container join-layout">
+        <!-- Benefits Column -->
+        <div style="display:grid; gap:20px;">
+          <div class="card">
+            <div class="kicker">Member Benefits</div>
+            <h2 style="font-size:1.5rem; margin-bottom:14px;">What You Gain as an ICR Member</h2>
+            <ul class="values-list">
+              <li>A supportive interdisciplinary research network across institutions</li>
+              <li>Collaborative research projects and structured peer mentorship</li>
+              <li>Capacity-building workshops, webinars, and methodology clinics</li>
+              <li>Publishing opportunities in the ICR Working Paper Series</li>
+              <li>Academic writing support, peer review, and leadership roles</li>
+              <li>Priority seating at the Campus Mega Research Summit</li>
+            </ul>
+          </div>
+
+          <div class="card" style="background:var(--navy-950); color:#ffffff; border-color:var(--navy-800);">
+            <h3 style="color:#ffffff; margin-bottom:8px;">Already Accepted or Ready to Publish?</h3>
+            <p style="color:rgba(255,255,255,0.78); font-size:0.93rem; margin-bottom:16px;">
+              Create your researcher profile directly in the ICR Member Portal to submit working papers, track event RSVPs, and join peer-review circles.
+            </p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <a href="/portal.html" class="btn btn-primary btn-sm">Open Member Portal →</a>
+              <a href="/constitution.html" class="btn btn-outline-light btn-sm">Review Constitution</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Membership Application Form -->
+        <div class="card">
+          <div class="kicker">Membership Application</div>
+          <h2 style="font-size:1.55rem; margin-bottom:6px;">Apply to Join ICR</h2>
+          <p style="color:var(--ink-600); font-size:0.93rem; margin-bottom:22px;">
+            Complete the form below. Applications are reviewed weekly by the ICR Executive Council.
+          </p>
+
+          <div id="join-alert" class="alert" role="alert"></div>
+
+          <form id="membership-form" name="icr-membership" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="icr-membership" />
+            <p class="sr-only"><label>Don't fill this out: <input name="bot-field" /></label></p>
+
+            <div class="form-grid">
+              <div class="form-field">
+                <label class="form-label" for="m-name">Full Name <span class="req">*</span></label>
+                <input id="m-name" name="fullName" type="text" class="form-input" placeholder="Your full name" required />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="m-email">Email Address <span class="req">*</span></label>
+                <input id="m-email" name="email" type="email" class="form-input" placeholder="you@university.edu" required />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="m-phone">Phone / WhatsApp Number</label>
+                <input id="m-phone" name="phone" type="tel" class="form-input" placeholder="+234 ..." />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="m-institution">Campus / Institution <span class="req">*</span></label>
+                <input id="m-institution" name="institution" type="text" class="form-input" placeholder="University, Polytechnic, or Research Lab" required />
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="m-level">Academic Level <span class="req">*</span></label>
+                <select id="m-level" name="academicLevel" class="form-select" required>
+                  <option value="Undergraduate">Undergraduate Student</option>
+                  <option value="Postgraduate (MSc/MA)">Postgraduate (MSc / MA)</option>
+                  <option value="Doctoral / PhD">Doctoral Researcher (PhD)</option>
+                  <option value="Early-Career Academic / Lecturer">Early-Career Academic / Lecturer</option>
+                  <option value="Independent Research Enthusiast">Independent Research Enthusiast</option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label class="form-label" for="m-discipline">Department / Discipline <span class="req">*</span></label>
+                <input id="m-discipline" name="discipline" type="text" class="form-input" placeholder="e.g., Public Health, AI, Economics" required />
+              </div>
+
+              <div class="form-field full">
+                <label class="form-label" for="m-interests">Key Research Interests</label>
+                <input id="m-interests" name="interests" type="text" class="form-input" placeholder="e.g., AI in Healthcare, Climate Policy, Data Science" />
+              </div>
+
+              <div class="form-field full">
+                <label class="form-label" for="m-motivation">Statement of Research Interest <span class="req">*</span></label>
+                <textarea id="m-motivation" name="motivation" class="form-textarea" placeholder="Tell us briefly about your research goals and how you hope to collaborate with the ICR community..." required minlength="20"></textarea>
+                <span class="form-hint">Minimum 20 characters. By applying, you agree to uphold ICR's Academic Integrity standards.</span>
+              </div>
+            </div>
+
+            <div style="margin-top:22px; display:flex; justify-content:flex-end;">
+              <button type="submit" class="btn btn-primary btn-lg">Submit Membership Application</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:0; border:0;">
+        <span>© 2026 Innovative Campus Researchers (ICR). All Rights Reserved.</span>
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+          <a href="/index.html">Home</a>
+          <a href="/research.html">Projects &amp; Research</a>
+          <a href="/events.html">Upcoming Events</a>
+          <a href="/constitution.html">Constitution</a>
+          <a href="mailto:icr2026@gmail.com">icr2026@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/js/app.js"></script>
+  <script type="module" src="/assets/js/join.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects &amp; Research Archive — Innovative Campus Researchers (ICR)</title>
+  <meta name="description" content="Browse, search, and cite working papers, policy briefs, and collaborative campus research projects published by Innovative Campus Researchers (ICR)." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/index.html" class="brand-link">
+        <img src="/favicon.svg" alt="ICR Shield Crest" class="brand-crest" width="44" height="44" />
+        <span class="brand-text">
+          <span class="brand-acronym">ICR · Est. 2026</span>
+          <span class="brand-name">Innovative Campus Researchers</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/research.html" class="nav-link active">Projects &amp; Research</a>
+        <a href="/events.html" class="nav-link">Upcoming Events</a>
+        <a href="/community.html" class="nav-link">Community</a>
+        <a href="/constitution.html" class="nav-link">Constitution</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="/portal.html" class="btn btn-outline btn-sm" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary btn-sm btn-pill">Join ICR</a>
+      </div>
+      <button type="button" id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-panel">
+      <a href="/index.html" class="nav-link">Home</a>
+      <a href="/research.html" class="nav-link active">Projects &amp; Research</a>
+      <a href="/events.html" class="nav-link">Upcoming Events</a>
+      <a href="/community.html" class="nav-link">Community &amp; Executives</a>
+      <a href="/constitution.html" class="nav-link">Our Constitution</a>
+      <div class="mobile-drawer-actions">
+        <a href="/portal.html" class="btn btn-outline" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary">Join ICR</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-eyebrow"><span class="dot"></span>Working Papers &amp; Open Archive</div>
+        <h1>Projects &amp; Research Archive</h1>
+        <p>Search peer-reviewed abstracts, working papers, and policy briefs authored by ICR scholars. Copy APA citations in one click or sign in to submit your own manuscript.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="paper-search" class="search-input" placeholder="Search by paper title, author, keyword, or topic..." aria-label="Search research papers" />
+          </div>
+          <div id="category-chips" class="chip-group"></div>
+          <a href="/portal.html" class="btn btn-primary btn-sm">+ Submit Paper</a>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+          <span id="papers-count" style="font-size:0.9rem; font-weight:600; color:var(--ink-600);">Loading publications...</span>
+          <a href="/community.html" style="font-size:0.88rem; font-weight:600; color:var(--crimson-600);">Browse Community Authors →</a>
+        </div>
+
+        <div id="papers-grid" class="grid-papers"></div>
+      </div>
+    </section>
+
+    <section class="section-sm section-tint">
+      <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;">
+        <div style="max-width:660px;">
+          <div class="kicker">Call for Working Papers</div>
+          <h2 style="font-size:1.7rem; margin-bottom:8px;">Have a manuscript, thesis abstract, or policy brief?</h2>
+          <p style="color:var(--ink-600);">Create a free researcher account in the ICR Member Portal to submit your work for peer review and inclusion in the ICR Open Archive.</p>
+        </div>
+        <a href="/portal.html" class="btn btn-primary btn-lg">Open Paper Submission Studio</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Abstract & Citation Modal -->
+  <div id="paper-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Research Paper Details">
+    <div class="modal-dialog">
+      <button type="button" id="paper-modal-close" class="modal-close" aria-label="Close modal">×</button>
+      <div id="paper-modal-body"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:0; border:0;">
+        <span>© 2026 Innovative Campus Researchers (ICR). All Rights Reserved.</span>
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+          <a href="/index.html">Home</a>
+          <a href="/events.html">Upcoming Events</a>
+          <a href="/community.html">Community</a>
+          <a href="/join.html">Join ICR</a>
+          <a href="mailto:icr2026@gmail.com">icr2026@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/js/app.js"></script>
+  <script type="module" src="/assets/js/research.js"></script>
+</body>
+</html>

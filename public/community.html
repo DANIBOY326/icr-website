@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community &amp; Executives — Innovative Campus Researchers (ICR)</title>
+  <meta name="description" content="Meet the Executive Council and Community Researchers driving interdisciplinary scholarship, peer review, and mentorship across ICR." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/index.html" class="brand-link">
+        <img src="/favicon.svg" alt="ICR Shield Crest" class="brand-crest" width="44" height="44" />
+        <span class="brand-text">
+          <span class="brand-acronym">ICR · Est. 2026</span>
+          <span class="brand-name">Innovative Campus Researchers</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/research.html" class="nav-link">Projects &amp; Research</a>
+        <a href="/events.html" class="nav-link">Upcoming Events</a>
+        <a href="/community.html" class="nav-link active">Community</a>
+        <a href="/constitution.html" class="nav-link">Constitution</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="/portal.html" class="btn btn-outline btn-sm" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary btn-sm btn-pill">Join ICR</a>
+      </div>
+      <button type="button" id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-panel">
+      <a href="/index.html" class="nav-link">Home</a>
+      <a href="/research.html" class="nav-link">Projects &amp; Research</a>
+      <a href="/events.html" class="nav-link">Upcoming Events</a>
+      <a href="/community.html" class="nav-link active">Community &amp; Executives</a>
+      <a href="/constitution.html" class="nav-link">Our Constitution</a>
+      <div class="mobile-drawer-actions">
+        <a href="/portal.html" class="btn btn-outline" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary">Join ICR</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-eyebrow"><span class="dot"></span>Scholars &amp; Leadership</div>
+        <h1>Community Researchers &amp; Executive Council</h1>
+        <p>Connect with our interdisciplinary campus researchers, founding alumni fellows, and the executive council stewarding ICR's academic standards.</p>
+      </div>
+    </section>
+
+    <!-- Executive Council -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-header">
+            <div class="kicker">Governance</div>
+            <h2 class="section-title">Meet the ICR Executive Council</h2>
+            <p class="section-desc">Dedicated officers coordinating research clinics, editorial review, campus outreach, and institutional governance.</p>
+          </div>
+          <a href="/constitution.html" class="btn btn-outline">Constitutional Mandate →</a>
+        </div>
+        <div id="executives-grid" class="grid-3"></div>
+      </div>
+    </section>
+
+    <!-- Community Researchers Directory -->
+    <section class="section section-tint">
+      <div class="container">
+        <div class="section-header-row">
+          <div class="section-header">
+            <div class="kicker">Member Directory</div>
+            <h2 class="section-title">Community Researchers</h2>
+            <p class="section-desc">Active researchers and founding fellows contributing to collaborative campus scholarship. New members appear here automatically after creating an account in the Member Portal.</p>
+          </div>
+          <a href="/portal.html" class="btn btn-primary">Create Your Researcher Profile</a>
+        </div>
+
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="member-search" class="search-input" placeholder="Search researchers by name, discipline, or institution..." aria-label="Search community researchers" />
+          </div>
+          <div id="cohort-chips" class="chip-group">
+            <button type="button" class="chip active" data-cohort="all">All Researchers</button>
+            <button type="button" class="chip" data-cohort="Current Researcher">Current Researchers</button>
+            <button type="button" class="chip" data-cohort="Past Community Researchers">Alumni Fellows</button>
+          </div>
+        </div>
+
+        <div id="researchers-grid" class="grid-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:0; border:0;">
+        <span>© 2026 Innovative Campus Researchers (ICR). All Rights Reserved.</span>
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+          <a href="/index.html">Home</a>
+          <a href="/research.html">Projects &amp; Research</a>
+          <a href="/events.html">Upcoming Events</a>
+          <a href="/join.html">Join ICR</a>
+          <a href="mailto:icr2026@gmail.com">icr2026@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/js/app.js"></script>
+  <script type="module" src="/assets/js/community.js"></script>
+</body>
+</html>

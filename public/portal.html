@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member Portal — Innovative Campus Researchers (ICR)</title>
+  <meta name="description" content="Sign in or create your ICR Researcher Account to manage your scholar profile, submit working papers, track event RSVPs, and access executive peer review." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/styles.css?v=3" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a href="/index.html" class="brand-link">
+        <img src="/favicon.svg" alt="ICR Shield Crest" class="brand-crest" width="44" height="44" />
+        <span class="brand-text">
+          <span class="brand-acronym">ICR · Est. 2026</span>
+          <span class="brand-name">Innovative Campus Researchers</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="/index.html" class="nav-link">Home</a>
+        <a href="/research.html" class="nav-link">Projects &amp; Research</a>
+        <a href="/events.html" class="nav-link">Upcoming Events</a>
+        <a href="/community.html" class="nav-link">Community</a>
+        <a href="/constitution.html" class="nav-link">Constitution</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="/portal.html" class="btn btn-navy btn-sm" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary btn-sm btn-pill">Join ICR</a>
+      </div>
+      <button type="button" id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="mobile-drawer-panel">
+      <a href="/index.html" class="nav-link">Home</a>
+      <a href="/research.html" class="nav-link">Projects &amp; Research</a>
+      <a href="/events.html" class="nav-link">Upcoming Events</a>
+      <a href="/community.html" class="nav-link">Community &amp; Executives</a>
+      <a href="/constitution.html" class="nav-link">Our Constitution</a>
+      <div class="mobile-drawer-actions">
+        <a href="/portal.html" class="btn btn-navy" data-portal-btn>Member Portal</a>
+        <a href="/join.html" class="btn btn-primary">Join ICR</a>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-eyebrow"><span class="dot"></span>Authenticated Researcher Workspace</div>
+        <h1>ICR Member Portal</h1>
+        <p>Sign in with your encrypted researcher credentials to publish working papers, maintain your scholarly profile, manage event RSVPs, and review community submissions.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <!-- Auth View (Signed Out) -->
+        <div id="auth-view" style="display:none;">
+          <div class="auth-layout">
+            <div class="card" style="background:linear-gradient(145deg, var(--navy-950), var(--navy-800)); color:#ffffff; border-color:var(--navy-800); justify-content:space-between; gap:24px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:14px; margin-bottom:22px;">
+                  <img src="/favicon.svg" alt="ICR Crest" width="54" height="54" />
+                  <div>
+                    <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-400);">ICR Researcher Access</div>
+                    <h2 style="color:#ffffff; font-size:1.45rem;">Your Academic Workspace</h2>
+                  </div>
+                </div>
+                <p style="color:rgba(255,255,255,0.8); margin-bottom:20px;">
+                  Sign in or create your free campus researcher account to collaborate with peers across institutions and contribute to the ICR Open Archive.
+                </p>
+                <ul class="values-list" style="color:rgba(255,255,255,0.88);">
+                  <li style="color:rgba(255,255,255,0.9);">Submit working papers, abstracts &amp; policy briefs</li>
+                  <li style="color:rgba(255,255,255,0.9);">Maintain your public scholar profile &amp; ORCID iD</li>
+                  <li style="color:rgba(255,255,255,0.9);">Track Summit &amp; Research Clinic RSVPs in one place</li>
+                  <li style="color:rgba(255,255,255,0.9);">Executive peer-review queue for council officers</li>
+                </ul>
+              </div>
+              <div style="padding-top:16px; border-top:1px solid rgba(255,255,255,0.14); font-size:0.84rem; color:rgba(255,255,255,0.68);">
+                Need assistance? Contact <a href="mailto:icr2026@gmail.com" style="color:var(--gold-400); text-decoration:underline;">icr2026@gmail.com</a>
+              </div>
+            </div>
+
+            <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+              <div class="tab-bar" role="tablist">
+                <button type="button" class="tab-btn active" data-auth-tab="login">Sign In</button>
+                <button type="button" class="tab-btn" data-auth-tab="register">Create Account</button>
+              </div>
+              <span class="badge badge-navy">Encrypted Session</span>
+            </div>
+
+            <div id="auth-alert" class="alert" role="alert"></div>
+
+            <!-- Sign In Form -->
+            <form id="login-form">
+              <div class="form-grid">
+                <div class="form-field full">
+                  <label class="form-label" for="login-email">Email Address</label>
+                  <input id="login-email" name="email" type="email" class="form-input" placeholder="researcher@university.edu" required />
+                </div>
+                <div class="form-field full">
+                  <label class="form-label" for="login-password">Password</label>
+                  <input id="login-password" name="password" type="password" class="form-input" placeholder="Enter your password" required />
+                </div>
+              </div>
+              <div style="margin-top:20px;">
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Sign In to Member Portal</button>
+              </div>
+              <p style="font-size:0.82rem; color:var(--ink-400); text-align:center; margin-top:14px;">
+                Protected with scrypt password hashing &amp; signed HttpOnly session cookies via Netlify Functions.
+              </p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" style="display:none;">
+              <div class="form-grid">
+                <div class="form-field full">
+                  <label class="form-label" for="reg-name">Full Name <span class="req">*</span></label>
+                  <input id="reg-name" name="fullName" type="text" class="form-input" placeholder="e.g., Samson Grace" required />
+                </div>
+                <div class="form-field full">
+                  <label class="form-label" for="reg-email">Email Address <span class="req">*</span></label>
+                  <input id="reg-email" name="email" type="email" class="form-input" placeholder="you@university.edu" required />
+                </div>
+                <div class="form-field full">
+                  <label class="form-label" for="reg-password">Password (min 8 chars) <span class="req">*</span></label>
+                  <input id="reg-password" name="password" type="password" class="form-input" placeholder="Create a strong password" minlength="8" required />
+                </div>
+                <div class="form-field">
+                  <label class="form-label" for="reg-institution">Campus / Institution</label>
+                  <input id="reg-institution" name="institution" type="text" class="form-input" placeholder="University name" required />
+                </div>
+                <div class="form-field">
+                  <label class="form-label" for="reg-level">Academic Level</label>
+                  <select id="reg-level" name="academicLevel" class="form-select">
+                    <option value="Undergraduate">Undergraduate</option>
+                    <option value="Postgraduate">Postgraduate (MSc / MA)</option>
+                    <option value="Doctoral / PhD">Doctoral / PhD</option>
+                    <option value="Early-Career Academic">Early-Career Academic</option>
+                  </select>
+                </div>
+                <div class="form-field full">
+                  <label class="form-label" for="reg-discipline">Research Discipline</label>
+                  <input id="reg-discipline" name="discipline" type="text" class="form-input" placeholder="e.g., AI & Healthcare, Social Policy, Data Science" required />
+                </div>
+                <div class="form-field full">
+                  <label class="form-label" for="reg-invite">Executive Council Invite Code <span style="font-weight:400; color:var(--ink-400);">(Optional — Council officers only)</span></label>
+                  <input id="reg-invite" name="inviteCode" type="password" class="form-input" placeholder="Leave blank for standard researcher membership" autocomplete="off" />
+                </div>
+              </div>
+              <div style="margin-top:20px;">
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Create Researcher Account</button>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Authenticated Dashboard View -->
+        <div id="dashboard-view" style="display:none;">
+          <div class="portal-grid">
+            <aside class="card" style="gap:18px;">
+              <div class="person-top">
+                <div id="dash-avatar" class="avatar-circle">IC</div>
+                <div>
+                  <h2 id="dash-name" style="font-size:1.1rem; margin-bottom:2px;">Researcher</h2>
+                  <div id="dash-role" class="person-role">ICR Member</div>
+                  <div id="dash-institution" style="font-size:0.8rem; color:var(--ink-400);">Campus Network</div>
+                </div>
+              </div>
+
+              <div class="portal-nav">
+                <button type="button" class="portal-nav-btn active" data-portal-tab="submit">Paper Submission Studio</button>
+                <button type="button" class="portal-nav-btn" data-portal-tab="activity">My Papers &amp; RSVPs</button>
+                <button type="button" class="portal-nav-btn" data-portal-tab="profile">Scholar Profile</button>
+                <div id="exec-nav-group" style="display:none; padding-top:10px; margin-top:6px; border-top:1px solid var(--border); gap:6px;">
+                  <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--crimson-600); padding:0 10px 4px;">Executive CMS</div>
+                  <button type="button" class="portal-nav-btn" data-portal-tab="exec">Review Queue &amp; Applications</button>
+                  <button type="button" class="portal-nav-btn" data-portal-tab="exec-events">Manage Events &amp; Flyers</button>
+                  <button type="button" class="portal-nav-btn" data-portal-tab="exec-team">Manage Executive Council</button>
+                </div>
+              </div>
+
+              <div style="padding-top:14px; border-top:1px solid var(--border);">
+                <button type="button" id="logout-btn" class="btn btn-outline btn-sm" style="width:100%;">Sign Out</button>
+              </div>
+            </aside>
+
+            <div>
+              <!-- Panel 1: Submit Paper -->
+              <section class="card" data-portal-panel="submit">
+                <div class="kicker">Open Archive Submission</div>
+                <h2 style="font-size:1.5rem; margin-bottom:6px;">Paper Submission Studio</h2>
+                <p style="color:var(--ink-600); font-size:0.93rem; margin-bottom:20px;">
+                  Submit your research abstract, working paper, or policy brief directly to the ICR Research Archive. Executive reviewers approve submissions for public listing.
+                </p>
+
+                <div id="paper-submit-alert" class="alert" role="alert"></div>
+
+                <form id="paper-submit-form" name="icr-paper-submission" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                  <input type="hidden" name="form-name" value="icr-paper-submission" />
+                  <p class="sr-only"><label>Don't fill this out: <input name="bot-field" /></label></p>
+
+                  <div class="form-grid">
+                    <div class="form-field full">
+                      <label class="form-label" for="paper-title">Manuscript / Research Title <span class="req">*</span></label>
+                      <input id="paper-title" name="title" type="text" class="form-input" placeholder="Enter full scholarly title" minlength="8" required />
+                    </div>
+
+                    <div class="form-field">
+                      <label class="form-label" for="paper-authors">Author(s) (comma-separated) <span class="req">*</span></label>
+                      <input id="paper-authors" name="authors" type="text" class="form-input" placeholder="e.g., Adebayo Blessing, Samson Grace" required />
+                    </div>
+
+                    <div class="form-field">
+                      <label class="form-label" for="paper-category">Discipline / Track</label>
+                      <select id="paper-category" name="category" class="form-select">
+                        <option value="Artificial Intelligence & Healthcare">Artificial Intelligence &amp; Healthcare</option>
+                        <option value="Research Methodology & Ethics">Research Methodology &amp; Ethics</option>
+                        <option value="Data Science & Technology">Data Science &amp; Technology</option>
+                        <option value="Social Sciences & Public Policy">Social Sciences &amp; Public Policy</option>
+                        <option value="Interdisciplinary Research">Interdisciplinary Research</option>
+                      </select>
+                    </div>
+
+                    <div class="form-field">
+                      <label class="form-label" for="paper-type">Publication Type</label>
+                      <select id="paper-type" name="type" class="form-select">
+                        <option value="Research Paper">Research Paper</option>
+                        <option value="Working Paper">Working Paper</option>
+                        <option value="Policy Brief">Policy Brief</option>
+                        <option value="Literature Review">Literature Review</option>
+                      </select>
+                    </div>
+
+                    <div class="form-field">
+                      <label class="form-label" for="paper-keywords">Keywords (comma-separated)</label>
+                      <input id="paper-keywords" name="keywords" type="text" class="form-input" placeholder="AI, Ethics, Public Health, Policy" />
+                    </div>
+
+                    <div class="form-field">
+                      <label class="form-label" for="paper-pdf-file">Upload Full Manuscript PDF <span style="font-weight:400; color:var(--ink-400);">(Optional · Max 4.5 MB)</span></label>
+                      <input id="paper-pdf-file" type="file" accept="application/pdf,.pdf" class="form-input" style="padding:9px 12px;" />
+                      <span id="paper-pdf-status" class="form-hint">Uploads directly to ICR Cloud Storage (Netlify Blobs).</span>
+                    </div>
+
+                    <div class="form-field">
+                      <label class="form-label" for="paper-pdf">Or Paste External Link <span style="font-weight:400; color:var(--ink-400);">(Google Drive / DOI)</span></label>
+                      <input id="paper-pdf" name="pdfUrl" type="text" class="form-input" placeholder="https://... or auto-filled on PDF upload" />
+                    </div>
+
+                    <div class="form-field full">
+                      <label class="form-label" for="paper-abstract">Structured Abstract <span class="req">*</span></label>
+                      <textarea id="paper-abstract" name="abstract" class="form-textarea" placeholder="Summarize research objective, methodology, key findings, and ethical/practical implications..." minlength="40" required></textarea>
+                    </div>
+                  </div>
+
+                  <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+                    <button type="submit" class="btn btn-primary btn-lg">Submit Paper to ICR Archive</button>
+                  </div>
+                </form>
+              </section>
+
+              <!-- Panel 2: My Activity -->
+              <section class="card" data-portal-panel="activity" style="display:none; gap:24px;">
+                <div>
+                  <div class="kicker">My Submissions</div>
+                  <h2 style="font-size:1.4rem; margin-bottom:14px;">Submitted Papers</h2>
+                  <div id="my-papers-list" style="display:grid; gap:12px;"></div>
+                </div>
+                <div style="padding-top:20px; border-top:1px solid var(--border);">
+                  <div class="kicker">Events</div>
+                  <h2 style="font-size:1.4rem; margin-bottom:14px;">My Event RSVPs</h2>
+                  <div id="my-rsvps-list" style="display:grid; gap:12px;"></div>
+                </div>
+              </section>
+
+              <!-- Panel 3: Scholar Profile -->
+              <section class="card" data-portal-panel="profile" style="display:none;">
+                <div class="kicker">Researcher Identity</div>
+                <h2 style="font-size:1.45rem; margin-bottom:16px;">Edit Scholar Profile</h2>
+                <form id="profile-form">
+                  <div class="form-grid">
+                    <div class="form-field">
+                      <label class="form-label" for="prof-name">Full Name</label>
+                      <input id="prof-name" name="fullName" type="text" class="form-input" required />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label" for="prof-inst">Institution</label>
+                      <input id="prof-inst" name="institution" type="text" class="form-input" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label" for="prof-level">Academic Level</label>
+                      <input id="prof-level" name="academicLevel" type="text" class="form-input" />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label" for="prof-disc">Discipline</label>
+                      <input id="prof-disc" name="discipline" type="text" class="form-input" />
+                    </div>
+                    <div class="form-field full">
+                      <label class="form-label" for="prof-orcid">ORCID iD (optional)</label>
+                      <input id="prof-orcid" name="orcid" type="text" class="form-input" placeholder="0000-0002-1825-0097" />
+                    </div>
+                    <div class="form-field full">
+                      <label class="form-label" for="prof-bio">Academic Bio</label>
+                      <textarea id="prof-bio" name="bio" class="form-textarea"></textarea>
+                    </div>
+                  </div>
+                  <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+                    <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+                  </div>
+                </form>
+              </section>
+
+              <!-- Panel 4: Executive Review Queue -->
+              <section class="card" data-portal-panel="exec" style="display:none; gap:26px;">
+                <div>
+                  <div class="kicker">Executive Council Controls</div>
+                  <h2 style="font-size:1.45rem; margin-bottom:12px;">Manuscript Peer-Review Queue</h2>
+                  <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:14px;">Inspect attached PDFs, approve member working papers to publish them live in the ICR Research Archive, or remove drafts.</p>
+                  <div id="exec-papers-list" style="display:grid; gap:12px;"></div>
+                </div>
+                <div style="padding-top:20px; border-top:1px solid var(--border);">
+                  <div class="kicker">Onboarding</div>
+                  <h2 style="font-size:1.45rem; margin-bottom:12px;">Recent Membership Applications</h2>
+                  <div id="exec-apps-list" style="display:grid; gap:12px;"></div>
+                </div>
+              </section>
+
+              <!-- Panel 5: Executive Events & Flyers CMS -->
+              <section class="card" data-portal-panel="exec-events" style="display:none; gap:26px;">
+                <div>
+                  <div class="kicker">No-Code Events CMS</div>
+                  <h2 style="font-size:1.45rem; margin-bottom:6px;">Create or Edit Upcoming Event</h2>
+                  <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:18px;">Publish summits, clinics, or workshops with an uncropped event flyer image—changes go live on <strong>/events</strong> immediately with zero coding.</p>
+
+                  <div id="exec-event-alert" class="alert" role="alert"></div>
+
+                  <form id="exec-event-form">
+                    <input type="hidden" name="id" id="ev-id" />
+                    <div class="form-grid">
+                      <div class="form-field full">
+                        <label class="form-label" for="ev-title">Event Title <span class="req">*</span></label>
+                        <input id="ev-title" name="title" type="text" class="form-input" placeholder="e.g., Second Campus Research & AI Summit" required />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ev-tagline">Tagline / Theme</label>
+                        <input id="ev-tagline" name="tagline" type="text" class="form-input" placeholder="e.g., Research Smarter. Achieve More." />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ev-badge">Event Badge</label>
+                        <select id="ev-badge" name="badge" class="form-select">
+                          <option value="Flagship Summit">Flagship Summit</option>
+                          <option value="Hands-On Clinic">Hands-On Clinic</option>
+                          <option value="Workshop">Workshop</option>
+                          <option value="Webinar">Webinar</option>
+                          <option value="Call for Papers">Call for Papers</option>
+                        </select>
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ev-date">Date / Schedule <span class="req">*</span></label>
+                        <input id="ev-date" name="dateLabel" type="text" class="form-input" placeholder="e.g., Saturday, December 12, 2026" required />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ev-time">Time</label>
+                        <input id="ev-time" name="timeLabel" type="text" class="form-input" placeholder="e.g., 10:00 AM – 2:00 PM WAT" />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ev-venue">Venue / Format</label>
+                        <input id="ev-venue" name="venue" type="text" class="form-input" placeholder="e.g., Main Auditorium & Zoom Live" />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ev-whatsapp">WhatsApp / Registration Group URL</label>
+                        <input id="ev-whatsapp" name="whatsappUrl" type="url" class="form-input" placeholder="https://chat.whatsapp.com/..." />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ev-flyer-file">Upload Event Flyer Image <span style="font-weight:400; color:var(--ink-400);">(JPG/PNG/WebP · Max 3.5 MB)</span></label>
+                        <input id="ev-flyer-file" type="file" accept="image/jpeg,image/png,image/webp" class="form-input" style="padding:9px 12px;" />
+                        <span id="ev-flyer-status" class="form-hint">Displayed full &amp; uncropped on the Events page.</span>
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ev-flyer-url">Flyer Image URL <span style="font-weight:400; color:var(--ink-400);">(Auto-filled on upload)</span></label>
+                        <input id="ev-flyer-url" name="flyerUrl" type="text" class="form-input" placeholder="/api/media?key=... or https://..." />
+                      </div>
+                      <div class="form-field full">
+                        <label class="form-label" for="ev-desc">Event Description <span class="req">*</span></label>
+                        <textarea id="ev-desc" name="description" class="form-textarea" placeholder="Describe what participants will learn and who should attend..." required></textarea>
+                      </div>
+                      <div class="form-field full">
+                        <label class="form-label" for="ev-tracks">Key Tracks / Agenda <span style="font-weight:400; color:var(--ink-400);">(Optional · One per line as <code>Track Name: Short description</code>)</span></label>
+                        <textarea id="ev-tracks" name="tracksText" class="form-textarea" style="min-height:92px;" placeholder="AI-Powered Research: Systematic literature reviews & discovery&#10;Ethical AI Practices: Integrity & proper referencing"></textarea>
+                      </div>
+                      <div class="form-field full">
+                        <label style="display:inline-flex; align-items:center; gap:10px; font-size:0.9rem; font-weight:600; color:var(--ink-900); cursor:pointer;">
+                          <input id="ev-featured" name="featured" type="checkbox" style="width:18px; height:18px;" />
+                          Feature as Flagship Event at the top of /events
+                        </label>
+                      </div>
+                    </div>
+                    <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;">
+                      <button type="button" id="ev-reset-btn" class="btn btn-outline">Clear Form</button>
+                      <button type="submit" class="btn btn-primary">Save &amp; Publish Event</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div style="padding-top:20px; border-top:1px solid var(--border);">
+                  <div class="kicker">Live Schedule</div>
+                  <h3 style="margin-bottom:12px;">Existing Events</h3>
+                  <div id="exec-events-list" style="display:grid; gap:12px;"></div>
+                </div>
+              </section>
+
+              <!-- Panel 6: Executive Council & Headshots CMS -->
+              <section class="card" data-portal-panel="exec-team" style="display:none; gap:26px;">
+                <div>
+                  <div class="kicker">No-Code Leadership CMS</div>
+                  <h2 style="font-size:1.45rem; margin-bottom:6px;">Manage Executive Council &amp; Headshots</h2>
+                  <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:18px;">Add or update Executive Council officers and upload official headshots—updates immediately on <strong>/community</strong> for annual leadership handovers.</p>
+
+                  <div id="exec-team-alert" class="alert" role="alert"></div>
+
+                  <form id="exec-team-form">
+                    <input type="hidden" name="id" id="ex-id" />
+                    <div class="form-grid">
+                      <div class="form-field">
+                        <label class="form-label" for="ex-name">Officer Full Name <span class="req">*</span></label>
+                        <input id="ex-name" name="name" type="text" class="form-input" placeholder="e.g., Adebayo Blessing" required />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ex-role">Official Title / Role <span class="req">*</span></label>
+                        <input id="ex-role" name="role" type="text" class="form-input" placeholder="e.g., President, Secretary General" required />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ex-photo-file">Upload Officer Headshot <span style="font-weight:400; color:var(--ink-400);">(JPG/PNG/WebP · Max 3.5 MB)</span></label>
+                        <input id="ex-photo-file" type="file" accept="image/jpeg,image/png,image/webp" class="form-input" style="padding:9px 12px;" />
+                        <span id="ex-photo-status" class="form-hint">Square portrait photos look sharpest.</span>
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="ex-photo-url">Photo URL <span style="font-weight:400; color:var(--ink-400);">(Auto-filled on upload)</span></label>
+                        <input id="ex-photo-url" name="photoUrl" type="text" class="form-input" placeholder="/api/media?key=... or leave blank for initials" />
+                      </div>
+                      <div class="form-field full">
+                        <label class="form-label" for="ex-focus">Portfolio / Responsibilities</label>
+                        <input id="ex-focus" name="focus" type="text" class="form-input" placeholder="e.g., Research Clinics, Peer-Review Standards & Partnerships" />
+                      </div>
+                    </div>
+                    <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;">
+                      <button type="button" id="ex-reset-btn" class="btn btn-outline">Clear Form</button>
+                      <button type="submit" class="btn btn-primary">Save Executive Officer</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div style="padding-top:20px; border-top:1px solid var(--border);">
+                  <div class="kicker">Active Roster</div>
+                  <h3 style="margin-bottom:12px;">Current Executive Council</h3>
+                  <div id="exec-team-list" style="display:grid; gap:12px;"></div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding-top:0; border:0;">
+        <span>© 2026 Innovative Campus Researchers (ICR). All Rights Reserved.</span>
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+          <a href="/index.html">Home</a>
+          <a href="/research.html">Projects &amp; Research</a>
+          <a href="/events.html">Upcoming Events</a>
+          <a href="/join.html">Join ICR</a>
+          <a href="mailto:icr2026@gmail.com">icr2026@gmail.com</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/js/app.js"></script>
+  <script type="module" src="/assets/js/portal.js"></script>
+</body>
+</html>

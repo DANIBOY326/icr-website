@@ -18,16 +18,56 @@ function renderEvents(events) {
   const others = events.filter((e) => e.id !== featured?.id);
 
   if (featuredWrap && featured) {
+    const hasFlyer = Boolean(featured.flyerUrl);
+    const tracksHtml = (featured.tracks || [])
+      .map(
+        (t) => `
+      <div class="track-item">
+        <strong>${escapeHtml(t.title)}</strong>
+        <span>${escapeHtml(t.detail)}</span>
+      </div>`
+      )
+      .join("");
+
+    const feePillsHtml = featured.feeNote
+      ? `<div class="summit-fee-strip" aria-label="Registration fees">
+          ${featured.feeNote
+            .split("·")
+            .map((part, idx) => `<span class="summit-fee-pill ${idx === 0 ? "highlight" : ""}">${escapeHtml(part.trim())}</span>`)
+            .join("")}
+        </div>`
+      : "";
+
+    const flyerShowcaseHtml = hasFlyer
+      ? `
+        <div class="summit-flyer-showcase">
+          <button type="button" class="summit-flyer-frame" data-open-flyer="${escapeHtml(featured.flyerUrl)}" data-flyer-title="${escapeHtml(featured.title)}" aria-label="View full ${escapeHtml(featured.title)} flyer">
+            <img src="${escapeHtml(featured.flyerUrl)}" alt="${escapeHtml(featured.title)} official event flyer" class="summit-flyer-img" />
+          </button>
+          <div class="summit-flyer-bar">
+            <span class="summit-flyer-caption">Official Event Flyer</span>
+            <div class="summit-flyer-actions">
+              <button type="button" class="btn btn-outline-light btn-sm" data-open-flyer="${escapeHtml(featured.flyerUrl)}" data-flyer-title="${escapeHtml(featured.title)}">View Full Flyer</button>
+              <a href="${escapeHtml(featured.flyerUrl)}" download="ICR-Event-Flyer.jpg" class="btn btn-primary btn-sm">Download</a>
+            </div>
+          </div>
+        </div>`
+      : `
+        <div>
+          <h3 style="font-size:0.9rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold-400); margin-bottom:14px;">What You Will Learn</h3>
+          <div class="track-list">${tracksHtml}</div>
+        </div>`;
+
     featuredWrap.innerHTML = `
-      <div class="summit-card">
+      <div class="summit-card ${hasFlyer ? "has-flyer" : ""}">
         <div>
           <span class="hero-eyebrow" style="margin-bottom:14px;"><span class="dot"></span>${escapeHtml(featured.badge)}</span>
           <h2 style="font-size:clamp(1.75rem,3vw,2.45rem); margin-bottom:8px;">${escapeHtml(featured.title)}</h2>
           <p style="color:var(--gold-400); font-family:var(--font-display); font-weight:700; font-size:1.05rem; margin-bottom:14px;">${escapeHtml(featured.tagline)}</p>
-          <p style="color:rgba(255,255,255,0.82); margin-bottom:18px;">${escapeHtml(featured.description)}</p>
+          <p style="color:rgba(255,255,255,0.84); margin-bottom:18px;">${escapeHtml(featured.description)}</p>
           <div class="summit-meta-grid">
             <div class="summit-meta-box">
-              <div class="summit-meta-label">Schedule</div>
+              <div class="summit-meta-label">Date</div>
               <div class="summit-meta-value">${escapeHtml(featured.dateLabel)}</div>
             </div>
             <div class="summit-meta-box">
@@ -43,32 +83,25 @@ function renderEvents(events) {
               <div class="summit-meta-value" id="summit-rsvp-count">${escapeHtml(featured.rsvpCount)} Registered</div>
             </div>
           </div>
-          <div style="display:flex; flex-wrap:wrap; gap:12px;">
-            <a href="#rsvp-section" class="btn btn-primary btn-lg" data-select-event="${escapeHtml(featured.id)}">Reserve Your Seat</a>
-            <a href="${escapeHtml(featured.whatsappUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light btn-lg">Join Summit WhatsApp Group</a>
-          </div>
-        </div>
-        <div>
+          ${feePillsHtml}
           ${
-            featured.flyerUrl
-              ? `<div style="margin-bottom:18px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.16); background:rgba(255,255,255,0.04);">
-                   <img src="${escapeHtml(featured.flyerUrl)}" alt="${escapeHtml(featured.title)} event flyer" style="width:100%; height:auto; display:block;" />
+            hasFlyer && tracksHtml
+              ? `<div style="margin-bottom:22px;">
+                   <h3 style="font-size:0.84rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold-400); margin-bottom:10px;">What You Will Learn</h3>
+                   <div class="track-list">${tracksHtml}</div>
                  </div>`
               : ""
           }
-          <h3 style="font-size:0.9rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold-400); margin-bottom:14px;">What You Will Master</h3>
-          <div class="track-list">
-            ${(featured.tracks || [])
-              .map(
-                (t) => `
-              <div class="track-item">
-                <strong>${escapeHtml(t.title)}</strong>
-                <span>${escapeHtml(t.detail)}</span>
-              </div>`
-              )
-              .join("")}
+          <div style="display:flex; flex-wrap:wrap; gap:12px;">
+            <a href="#rsvp-section" class="btn btn-primary btn-lg" data-select-event="${escapeHtml(featured.id)}">Reserve Your Seat</a>
+            ${
+              featured.whatsappRegisterUrl
+                ? `<a href="${escapeHtml(featured.whatsappRegisterUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light btn-lg">WhatsApp Register (${escapeHtml(featured.whatsappRegisterLabel || "Chat")})</a>`
+                : `<a href="${escapeHtml(featured.whatsappUrl)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light btn-lg">Join Summit WhatsApp Group</a>`
+            }
           </div>
         </div>
+        ${flyerShowcaseHtml}
       </div>`;
   }
 
@@ -126,10 +159,41 @@ async function init() {
   }
 
   document.body.addEventListener("click", (e) => {
+    const flyerTrigger = e.target.closest("[data-open-flyer]");
+    if (flyerTrigger) {
+      const lightbox = document.getElementById("flyer-lightbox");
+      const img = document.getElementById("flyer-lightbox-img");
+      const dl = document.getElementById("flyer-lightbox-download");
+      if (lightbox && img) {
+        img.src = flyerTrigger.dataset.openFlyer;
+        img.alt = `${flyerTrigger.dataset.flyerTitle || "ICR Event"} full flyer`;
+        if (dl) dl.href = flyerTrigger.dataset.openFlyer;
+        lightbox.classList.add("open");
+        lightbox.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+      return;
+    }
+
     const btn = e.target.closest("[data-select-event]");
     if (!btn) return;
     const select = document.getElementById("rsvp-event-select");
     if (select) select.value = btn.dataset.selectEvent;
+  });
+
+  const lightbox = document.getElementById("flyer-lightbox");
+  const closeLightbox = () => {
+    if (!lightbox) return;
+    lightbox.classList.remove("open");
+    lightbox.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  };
+  document.getElementById("flyer-lightbox-close")?.addEventListener("click", closeLightbox);
+  lightbox?.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && lightbox?.classList.contains("open")) closeLightbox();
   });
 
   const form = document.getElementById("event-rsvp-form");

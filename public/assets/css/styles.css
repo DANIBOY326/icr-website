@@ -1120,6 +1120,142 @@ p:last-child {
   color: rgba(255, 255, 255, 0.75);
 }
 
+/* Summit Flyer Showcase & Lightbox */
+.summit-card.has-flyer {
+  grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+  align-items: center;
+  gap: 38px;
+}
+
+.summit-fee-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 22px;
+}
+
+.summit-fee-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.summit-fee-pill.highlight {
+  background: rgba(201, 155, 59, 0.18);
+  border-color: rgba(229, 190, 103, 0.38);
+  color: var(--gold-400);
+}
+
+.summit-flyer-showcase {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.34);
+  max-width: 460px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.summit-flyer-frame {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  cursor: zoom-in;
+  display: block;
+  border: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.summit-flyer-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.28s ease;
+}
+
+.summit-flyer-frame:hover .summit-flyer-img {
+  transform: scale(1.015);
+}
+
+.summit-flyer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 4px 2px;
+}
+
+.summit-flyer-caption {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+}
+
+.summit-flyer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.flyer-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(11, 19, 32, 0.88);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.flyer-lightbox.open {
+  display: flex;
+}
+
+.flyer-lightbox-inner {
+  position: relative;
+  max-width: min(92vw, 760px);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.flyer-lightbox-img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(92vh - 64px);
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.55);
+  background: #ffffff;
+}
+
+.flyer-lightbox-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 /* ==========================================================================
    Filter Bar & Search Controls
    ========================================================================== */
@@ -1676,6 +1812,7 @@ p:last-child {
   .hero-inner,
   .community-feature,
   .summit-card,
+  .summit-card.has-flyer,
   .newsletter-inner,
   .portal-grid,
   .join-layout,

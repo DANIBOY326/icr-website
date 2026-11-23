@@ -116,34 +116,31 @@ export function getSeedEvents() {
       tagline: "Research Smarter. Achieve More.",
       badge: "Flagship Summit",
       featured: true,
-      dateLabel: "Upcoming Cohort · 2026",
-      isoDate: "2026-12-12T10:00:00+01:00",
-      timeLabel: "10:00 AM – 3:00 PM WAT",
-      venue: "Hybrid (Campus Auditorium & Live Virtual Stream)",
+      dateLabel: "Saturday, December 5, 2026",
+      isoDate: "2026-12-05T10:00:00+01:00",
+      timeLabel: "10:00 AM WAT",
+      venue: "OCF Lecture Hall",
       audience: "Students, Lecturers, Early-Career Researchers & Innovators",
+      flyerUrl: "/assets/images/first-campus-mega-research-summit-flyer.jpg",
+      feeNote: "Free for all ICR members · ₦1,000 one-time attendance · ₦2,000 membership fee",
       whatsappUrl: "https://chat.whatsapp.com/DAj9PPNiuiGDWyl37SsImX",
+      whatsappRegisterUrl:
+        "https://wa.me/2348029522173?text=Hello%20ICR%2C%20I%20would%20like%20to%20register%20for%20the%20First%20Campus%20Mega%20Research%20Summit%20on%20December%205%2C%202026.",
+      whatsappRegisterLabel: "+234 802 952 2173",
       description:
-        "A collaborative campus-wide platform for students, researchers, academics, and innovation enthusiasts ready to transform how academic research is conducted using Artificial Intelligence responsibly and rigorously.",
+        "Are you ready to transform the way you conduct research with Artificial Intelligence? Join our First Campus Mega Research Summit — a collaborative platform for students, researchers, academics, and innovation enthusiasts who want to explore and harness the power of AI tools in modern research.",
       tracks: [
         {
           title: "AI-Powered Research",
-          detail: "Use modern AI tools for systematic literature reviews, discovery, and academic exploration.",
+          detail: "Learn to use AI tools for literature reviews, research discovery, and academic exploration.",
         },
         {
-          title: "Academic Writing Mastery",
-          detail: "Strengthen academic writing, manuscript editing, proofreading, and referencing precision.",
-        },
-        {
-          title: "Data Analysis & Visualization",
-          detail: "Explore AI-assisted quantitative and qualitative analysis, interpretation, and chart design.",
-        },
-        {
-          title: "Research Productivity",
-          detail: "Discover structured workflows and citation pipelines that save hours across every study.",
+          title: "Academic Writing",
+          detail: "Improve your academic writing, editing, proofreading, and referencing skills.",
         },
         {
           title: "Ethical AI Practices",
-          detail: "Master responsible AI disclosure, academic integrity, plagiarism prevention, and proper referencing.",
+          detail: "Understand responsible AI use, academic integrity, plagiarism prevention, and proper referencing.",
         },
       ],
       rsvpCount: 142,

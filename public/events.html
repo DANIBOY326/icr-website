@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/css/styles.css?v=3" />
+  <link rel="stylesheet" href="/assets/css/styles.css?v=4" />
 </head>
 <body>
   <header class="site-header">
@@ -84,12 +84,13 @@
 
           <div class="card" style="background:var(--navy-950); color:#ffffff; border-color:var(--navy-800); gap:14px;">
             <span class="badge badge-gold" style="align-self:flex-start; background:rgba(229,190,103,0.18); color:var(--gold-400);">Live Community Hub</span>
-            <h3 style="color:#ffffff;">Join the Summit WhatsApp Community</h3>
+            <h3 style="color:#ffffff;">Register via WhatsApp or Join the Community</h3>
             <p style="color:rgba(255,255,255,0.78); font-size:0.93rem;">
-              Connect immediately with fellow student researchers, lecturers, and summit speakers ahead of the session.
+              Free for all ICR members · ₦1,000 one-time attendance · ₦2,000 membership fee. Chat directly with the Summit desk on <strong>+234 802 952 2173</strong> or join fellow researchers in the Summit WhatsApp group.
             </p>
-            <div>
-              <a href="https://chat.whatsapp.com/DAj9PPNiuiGDWyl37SsImX" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">Open WhatsApp Group →</a>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <a href="https://wa.me/2348029522173?text=Hello%20ICR%2C%20I%20would%20like%20to%20register%20for%20the%20First%20Campus%20Mega%20Research%20Summit%20on%20December%205%2C%202026." target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Chat +234 802 952 2173 →</a>
+              <a href="https://chat.whatsapp.com/DAj9PPNiuiGDWyl37SsImX" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light btn-sm">Open WhatsApp Group →</a>
             </div>
           </div>
         </div>
@@ -157,6 +158,17 @@
       </div>
     </div>
   </footer>
+
+  <!-- Fullscreen Event Flyer Lightbox -->
+  <div id="flyer-lightbox" class="flyer-lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Full Event Flyer">
+    <div class="flyer-lightbox-inner">
+      <img id="flyer-lightbox-img" class="flyer-lightbox-img" src="" alt="Official Event Flyer" />
+      <div class="flyer-lightbox-bar">
+        <a id="flyer-lightbox-download" href="#" download="ICR-First-Campus-Mega-Research-Summit-Flyer.jpg" class="btn btn-primary btn-sm">Download Flyer</a>
+        <button type="button" id="flyer-lightbox-close" class="btn btn-outline-light btn-sm">Close Preview ×</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="/assets/js/app.js"></script>
   <script type="module" src="/assets/js/events.js"></script>

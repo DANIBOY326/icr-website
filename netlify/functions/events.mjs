@@ -9,9 +9,45 @@ import {
 } from "./_lib/http.mjs";
 import { getSeedEvents, readCollection, writeCollection } from "./_lib/store.mjs";
 
+async function ensureOfficialSummitSynced(events) {
+  const summit = events.find((e) => e.id === "evt-mega-summit-2026");
+  if (!summit) return events;
+
+  const seedSummit = getSeedEvents()[0];
+  let changed = false;
+
+  if (!summit.flyerUrl) {
+    summit.flyerUrl = seedSummit.flyerUrl;
+    changed = true;
+  }
+  if (!summit.dateLabel || summit.dateLabel.includes("Upcoming Cohort")) {
+    summit.dateLabel = seedSummit.dateLabel;
+    summit.isoDate = seedSummit.isoDate;
+    summit.timeLabel = seedSummit.timeLabel;
+    summit.venue = seedSummit.venue;
+    summit.description = seedSummit.description;
+    summit.tracks = seedSummit.tracks;
+    changed = true;
+  }
+  if (!summit.feeNote) {
+    summit.feeNote = seedSummit.feeNote;
+    changed = true;
+  }
+  if (!summit.whatsappRegisterUrl) {
+    summit.whatsappRegisterUrl = seedSummit.whatsappRegisterUrl;
+    summit.whatsappRegisterLabel = seedSummit.whatsappRegisterLabel;
+    changed = true;
+  }
+
+  if (changed) {
+    await writeCollection("events", events);
+  }
+  return events;
+}
+
 export default async function handler(req) {
   if (req.method === "GET") {
-    const events = await readCollection("events", getSeedEvents);
+    const events = await ensureOfficialSummitSynced(await readCollection("events", getSeedEvents));
     const session = getSessionFromRequest(req);
     let myRsvps = [];
     if (session) {

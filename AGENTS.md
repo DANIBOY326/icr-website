@@ -8,8 +8,8 @@ This file preserves the full architectural context, design decisions, security r
 - **Purpose:** Standalone full-stack web platform replacing the legacy Carrd splash page (`icresearchers.carrd.co`) and legacy Google Sites site (`sites.google.com/view/innovative-campus-researchers/home`).
 - **Workspace:** Standalone repository at `C:\Users\budge\OneDrive\Documents\Dan\IDEAS_Dan\icr-website` (completely independent from `Budget AI Translator`).
 - **GitHub Repository:** `https://github.com/DANIBOY326/icr-website` (branch: `main`).
-- **Production URL:** `https://icr-website.netlify.app/`
-- **Netlify Site ID:** `e365070f-6bdb-4e68-a495-e996ee649ef8` (connected to `DANIBOY326/icr-website` for automatic deploys on `git push` to `main`).
+- **Production URL:** `https://icresearchers.netlify.app/`
+- **Netlify Project:** `icresearchers` (Site ID: `e365070f-6bdb-4e68-a495-e996ee649ef8`, dashboard: `https://app.netlify.com/projects/icresearchers`, connected to `DANIBOY326/icr-website` for automatic deploys on `git push` to `main`).
 - **Cost Constraint:** Keep hosting, storage, authentication, and forms **100% free** on Netlify's starter tier unless the owner explicitly requests paid services or a custom `.org` domain.
 
 ## 2. Design System & UI/UX Standards

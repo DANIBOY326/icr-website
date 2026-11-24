@@ -24,7 +24,7 @@ A complete, publication-grade standalone web platform for **Innovative Campus Re
 
 ## Production Configuration (Netlify Dashboard — 100% Free)
 
-Go to **Netlify Dashboard → icr-website → Project configuration → Environment variables** and add:
+Go to **Netlify Dashboard → icresearchers → Project configuration → Environment variables** and add:
 
 1. **Executive Council Admin Access (Free & Private):**
    - `ICR_EXEC_EMAIL` — Owner / President's private executive email (e.g., `icr2026@gmail.com`)

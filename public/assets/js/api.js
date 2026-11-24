@@ -416,6 +416,36 @@ export const ICR = {
     }
   },
 
+  async updateApplicationStatus(id, status) {
+    try {
+      return await apiFetch("/api/applications", {
+        method: "PATCH",
+        body: JSON.stringify({ id, status }),
+      });
+    } catch (e) {
+      if (e.isApiError) throw e;
+      const apps = readLocal(LOCAL_KEYS.apps, []);
+      const target = apps.find((a) => a.id === id);
+      if (target) target.status = status;
+      writeLocal(LOCAL_KEYS.apps, apps);
+      return { ok: true, application: target };
+    }
+  },
+
+  async deleteApplication(id) {
+    try {
+      return await apiFetch("/api/applications", {
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+      });
+    } catch (e) {
+      if (e.isApiError) throw e;
+      const apps = readLocal(LOCAL_KEYS.apps, []).filter((a) => a.id !== id);
+      writeLocal(LOCAL_KEYS.apps, apps);
+      return { ok: true, deletedId: id };
+    }
+  },
+
   async uploadFile(file, kind = "pdf") {
     const dataBase64 = await new Promise((resolve, reject) => {
       const reader = new FileReader();

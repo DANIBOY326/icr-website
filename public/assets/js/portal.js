@@ -334,17 +334,61 @@ async function refreshMyActivity() {
         const apps = appRes.applications || [];
         appsWrap.innerHTML = apps.length
           ? apps
-              .map(
-                (a) => `
-              <div class="card" style="padding:16px; gap:6px;">
-                <div style="display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap;">
-                  <strong>${escapeHtml(a.fullName)} (${escapeHtml(a.academicLevel)})</strong>
-                  <span class="badge badge-navy">${escapeHtml(a.institution)}</span>
+              .map((a) => {
+                const status = (a.status || "received").toLowerCase();
+                const statusBadge =
+                  status === "approved"
+                    ? `<span class="badge badge-success">Approved &amp; Onboarded</span>`
+                    : status === "declined"
+                    ? `<span class="badge badge-crimson">Declined</span>`
+                    : `<span class="badge badge-warning">Pending Review</span>`;
+
+                const welcomeSubject = "Welcome to Innovative Campus Researchers (ICR) — Next Steps";
+                const welcomeBody = `Hello ${a.fullName},\n\nCongratulations! Your membership application to Innovative Campus Researchers (ICR) has been approved.\n\nHere are your 2 quick onboarding steps:\n1. Create your encrypted ICR Member Portal account (leave the Executive Invite Code blank): https://icresearchers.netlify.app/portal\n2. Join our ICR Community WhatsApp Group: https://chat.whatsapp.com/DAj9PPNiuiGDWyl37SsImX\n\nOnce signed in, you can upload your profile headshot, submit working papers, and RSVP for upcoming summits and clinics.\n\nWarm regards,\nICR Executive Council\nicr2026@gmail.com`;
+                const mailHref = `mailto:${encodeURIComponent(a.email)}?subject=${encodeURIComponent(welcomeSubject)}&body=${encodeURIComponent(welcomeBody)}`;
+
+                let waBtn = "";
+                if (a.phone) {
+                  const digits = String(a.phone).replace(/\D/g, "");
+                  const waNum = digits.startsWith("0") && digits.length === 11 ? `234${digits.slice(1)}` : digits;
+                  if (waNum.length >= 10) {
+                    const waText = `Hello ${a.fullName}! Welcome to Innovative Campus Researchers (ICR). Your membership application has been approved! Please create your Member Portal account at https://icresearchers.netlify.app/portal and join our WhatsApp community: https://chat.whatsapp.com/DAj9PPNiuiGDWyl37SsImX`;
+                    waBtn = `<a href="https://wa.me/${waNum}?text=${encodeURIComponent(waText)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">WhatsApp Welcome</a>`;
+                  }
+                }
+
+                return `
+              <div class="card" style="padding:18px; gap:10px;">
+                <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center;">
+                  <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <strong>${escapeHtml(a.fullName)}</strong>
+                    <span class="badge badge-navy">${escapeHtml(a.academicLevel || "Applicant")}</span>
+                    ${statusBadge}
+                  </div>
+                  <span style="font-size:0.8rem; color:var(--ink-400);">${escapeHtml(a.institution)}${a.submittedAt ? ` · ${new Date(a.submittedAt).toLocaleDateString()}` : ""}</span>
                 </div>
-                <div style="font-size:0.84rem; color:var(--ink-600);">${escapeHtml(a.email)} · ${escapeHtml(a.discipline)}</div>
-                <p style="font-size:0.88rem; margin-top:4px;">${escapeHtml(a.motivation)}</p>
-              </div>`
-              )
+                <div style="font-size:0.84rem; color:var(--ink-600);">
+                  ${escapeHtml(a.email)}${a.phone ? ` · ${escapeHtml(a.phone)}` : ""} · ${escapeHtml(a.discipline || "Interdisciplinary")}
+                </div>
+                ${a.interests ? `<div style="font-size:0.82rem; color:var(--navy-800);"><strong>Interests:</strong> ${escapeHtml(a.interests)}</div>` : ""}
+                <p style="font-size:0.88rem; margin:2px 0 4px;">${escapeHtml(a.motivation)}</p>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding-top:10px; border-top:1px solid var(--border);">
+                  ${
+                    status === "approved"
+                      ? `<button type="button" class="btn btn-outline btn-sm" data-app-status="${escapeHtml(a.id)}" data-next-app-status="received">Move to Pending</button>`
+                      : `<button type="button" class="btn btn-primary btn-sm" data-app-status="${escapeHtml(a.id)}" data-next-app-status="approved">Approve &amp; Onboard</button>`
+                  }
+                  <a href="${mailHref}" class="btn btn-navy btn-sm">Email Welcome</a>
+                  ${waBtn}
+                  ${
+                    status === "received"
+                      ? `<button type="button" class="btn btn-outline btn-sm" data-app-status="${escapeHtml(a.id)}" data-next-app-status="declined">Decline</button>`
+                      : ""
+                  }
+                  <button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger); margin-left:auto;" data-delete-app="${escapeHtml(a.id)}" data-delete-app-name="${escapeHtml(a.fullName)}">Delete</button>
+                </div>
+              </div>`;
+              })
               .join("")
           : `<p style="color:var(--ink-400);">No new membership applications in the queue yet.</p>`;
       } catch {
@@ -902,6 +946,35 @@ async function init() {
         renderExecTeamList(res.executives || []);
       } catch (err) {
         showToast(err.message || "Remove failed.", "error");
+        delBtn.disabled = false;
+      }
+    }
+  });
+
+  // Executive Membership Applications 1-Click Onboarding (Approve / Decline / Delete)
+  document.getElementById("exec-apps-list")?.addEventListener("click", async (e) => {
+    const statusBtn = e.target.closest("[data-app-status]");
+    const delBtn = e.target.closest("[data-delete-app]");
+    if (statusBtn) {
+      statusBtn.disabled = true;
+      try {
+        const res = await ICR.updateApplicationStatus(statusBtn.dataset.appStatus, statusBtn.dataset.nextAppStatus);
+        showToast(res.message || "Application updated!", "success");
+        await refreshMyActivity();
+      } catch (err) {
+        showToast(err.message || "Could not update application.", "error");
+        statusBtn.disabled = false;
+      }
+    } else if (delBtn) {
+      const name = delBtn.dataset.deleteAppName || "this applicant";
+      if (!confirm(`Remove the membership application from ${name}?`)) return;
+      delBtn.disabled = true;
+      try {
+        await ICR.deleteApplication(delBtn.dataset.deleteApp);
+        showToast("Application removed.", "info");
+        await refreshMyActivity();
+      } catch (err) {
+        showToast(err.message || "Could not delete application.", "error");
         delBtn.disabled = false;
       }
     }

@@ -128,11 +128,24 @@
               <div class="form-field">
                 <label class="form-label" for="m-level">Academic Level <span class="req">*</span></label>
                 <select id="m-level" name="academicLevel" class="form-select" required>
-                  <option value="Undergraduate">Undergraduate Student</option>
-                  <option value="Postgraduate (MSc/MA)">Postgraduate (MSc / MA)</option>
-                  <option value="Doctoral / PhD">Doctoral Researcher (PhD)</option>
-                  <option value="Early-Career Academic / Lecturer">Early-Career Academic / Lecturer</option>
-                  <option value="Independent Research Enthusiast">Independent Research Enthusiast</option>
+                  <optgroup label="Diploma &amp; Undergraduate">
+                    <option value="ND / OND">ND / OND (National Diploma)</option>
+                    <option value="NCE">NCE (Nigeria Certificate in Education)</option>
+                    <option value="HND">HND (Higher National Diploma)</option>
+                    <option value="Undergraduate (BSc / BA / BEd)" selected>Undergraduate (BSc / BA / BEd)</option>
+                    <option value="BTech / BEng">BTech / BEng (Technology / Engineering)</option>
+                  </optgroup>
+                  <optgroup label="Postgraduate &amp; Doctoral">
+                    <option value="PGD">PGD (Postgraduate Diploma)</option>
+                    <option value="Postgraduate (MSc / MA / MTech / MBA)">Postgraduate (MSc / MA / MTech / MBA)</option>
+                    <option value="MPhil">MPhil (Master of Philosophy)</option>
+                    <option value="Doctoral / PhD">Doctoral / PhD</option>
+                    <option value="Postdoctoral Fellow">Postdoctoral Fellow</option>
+                  </optgroup>
+                  <optgroup label="Faculty &amp; Independent">
+                    <option value="Early-Career Academic / Lecturer">Early-Career Academic / Lecturer</option>
+                    <option value="Independent Researcher">Independent Researcher</option>
+                  </optgroup>
                 </select>
               </div>
 

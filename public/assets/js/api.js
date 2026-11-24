@@ -557,4 +557,11 @@ export const ICR = {
       body: JSON.stringify({ id }),
     });
   },
+
+  async deleteMyAccount(password) {
+    return apiFetch("/api/auth-me", {
+      method: "DELETE",
+      body: JSON.stringify({ password }),
+    });
+  },
 };

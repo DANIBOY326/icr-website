@@ -55,10 +55,16 @@ function renderResearchers() {
       (r) => `
       <article class="card card-interactive person-card">
         <div class="person-top">
-          <div class="avatar-circle" style="background:linear-gradient(135deg,var(--navy-900),var(--navy-700));">${escapeHtml(getInitials(r.name))}</div>
+          <div class="avatar-circle" style="background:linear-gradient(135deg,var(--navy-900),var(--navy-700)); overflow:hidden;">
+            ${
+              r.photoUrl
+                ? `<img src="${escapeHtml(r.photoUrl)}" alt="${escapeHtml(r.name)}" style="width:100%; height:100%; object-fit:cover;" />`
+                : escapeHtml(getInitials(r.name))
+            }
+          </div>
           <div>
             <h3 style="font-size:1.08rem; margin-bottom:2px;">${escapeHtml(r.name)}</h3>
-            <div class="person-role">${escapeHtml(r.cohort)}</div>
+            <div class="person-role">${escapeHtml(r.academicLevel ? `${r.cohort} · ${r.academicLevel}` : r.cohort)}</div>
           </div>
         </div>
         <div style="font-size:0.86rem; font-weight:600; color:var(--navy-800);">${escapeHtml(r.discipline)}</div>

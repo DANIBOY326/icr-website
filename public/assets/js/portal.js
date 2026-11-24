@@ -29,7 +29,16 @@ function setPortalPanel(panelId) {
   });
 }
 
-function bindFileUploader(fileInputId, targetUrlId, statusId, kind) {
+function renderAvatarEl(el, fullName, photoUrl) {
+  if (!el) return;
+  if (photoUrl) {
+    el.innerHTML = `<img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(fullName || "Profile")}" style="width:100%; height:100%; object-fit:cover;" />`;
+  } else {
+    el.textContent = getInitials(fullName);
+  }
+}
+
+function bindFileUploader(fileInputId, targetUrlId, statusId, kind, onUploaded) {
   const fileInput = document.getElementById(fileInputId);
   const urlInput = document.getElementById(targetUrlId);
   const statusEl = document.getElementById(statusId);
@@ -38,7 +47,7 @@ function bindFileUploader(fileInputId, targetUrlId, statusId, kind) {
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files?.[0];
     if (!file) return;
-    const maxMb = kind === "image" ? 3.5 : 4.5;
+    const maxMb = kind === "avatar" ? 2.5 : kind === "image" ? 3.5 : 4.5;
     if (file.size > maxMb * 1024 * 1024) {
       showToast(`File is too large. Max size is ${maxMb} MB.`, "error");
       fileInput.value = "";
@@ -51,6 +60,7 @@ function bindFileUploader(fileInputId, targetUrlId, statusId, kind) {
       urlInput.value = res.url;
       if (statusEl) statusEl.textContent = `Uploaded: ${res.fileName} (${Math.round(res.size / 1024)} KB)`;
       showToast(`Uploaded ${res.fileName} to ICR Cloud Storage!`, "success");
+      if (typeof onUploaded === "function") onUploaded(res);
     } catch (err) {
       if (statusEl) statusEl.textContent = err.message || "Upload failed.";
       showToast(err.message || "File upload failed.", "error");
@@ -64,10 +74,22 @@ async function renderDashboard(user) {
   document.getElementById("auth-view").style.display = "none";
   document.getElementById("dashboard-view").style.display = "block";
 
-  document.getElementById("dash-avatar").textContent = getInitials(user.fullName);
+  renderAvatarEl(document.getElementById("dash-avatar"), user.fullName, user.photoUrl);
+  renderAvatarEl(document.getElementById("prof-avatar-preview"), user.fullName, user.photoUrl);
   document.getElementById("dash-name").textContent = user.fullName;
-  document.getElementById("dash-role").textContent = user.role === "executive" ? "Executive Reviewer" : "ICR Member";
+  const roleLabel = user.role === "executive" ? "Executive Council" : "ICR Member";
+  document.getElementById("dash-role").textContent = roleLabel;
   document.getElementById("dash-institution").textContent = user.institution || "ICR Campus Network";
+
+  const emailDisp = document.getElementById("prof-email-display");
+  const roleDisp = document.getElementById("prof-role-display");
+  if (emailDisp) emailDisp.textContent = user.email || "";
+  if (roleDisp) roleDisp.textContent = `${roleLabel}${user.academicLevel ? ` · ${user.academicLevel}` : ""}`;
+
+  const selfDeleteSec = document.getElementById("self-delete-section");
+  if (selfDeleteSec) {
+    selfDeleteSec.style.display = user.isEnvPrimary ? "none" : "block";
+  }
 
   const execNavGroup = document.getElementById("exec-nav-group");
   if (execNavGroup) {
@@ -79,15 +101,35 @@ async function renderDashboard(user) {
   if (pf) {
     pf.fullName.value = user.fullName || "";
     pf.institution.value = user.institution || "";
-    pf.academicLevel.value = user.academicLevel || "Undergraduate";
+    const levelSel = pf.academicLevel;
+    const savedLevel = user.academicLevel || "Undergraduate (BSc / BA / BEd)";
+    if (levelSel && levelSel.tagName === "SELECT") {
+      const hasMatch = Array.from(levelSel.options).some((opt) => opt.value === savedLevel);
+      if (!hasMatch && savedLevel) {
+        const customOpt = document.createElement("option");
+        customOpt.value = savedLevel;
+        customOpt.textContent = savedLevel;
+        levelSel.appendChild(customOpt);
+      }
+      levelSel.value = savedLevel;
+    } else if (levelSel) {
+      levelSel.value = savedLevel;
+    }
     pf.discipline.value = user.discipline || "";
+    if (pf.phone) pf.phone.value = user.phone || "";
     pf.orcid.value = user.orcid || "";
+    if (pf.profileUrl) pf.profileUrl.value = user.profileUrl || "";
+    if (pf.photoUrl) pf.photoUrl.value = user.photoUrl || "";
     pf.bio.value = user.bio || "";
   }
 
   // Hydrate author default on paper form
   const paperAuthor = document.getElementById("paper-authors");
   if (paperAuthor && !paperAuthor.value) paperAuthor.value = user.fullName;
+
+  if (window.location.hash === "#profile") {
+    setPortalPanel("profile");
+  }
 
   await refreshMyActivity();
 }
@@ -369,6 +411,15 @@ async function init() {
   bindFileUploader("paper-pdf-file", "paper-pdf", "paper-pdf-status", "pdf");
   bindFileUploader("ev-flyer-file", "ev-flyer-url", "ev-flyer-status", "image");
   bindFileUploader("ex-photo-file", "ex-photo-url", "ex-photo-status", "image");
+  bindFileUploader("prof-photo-file", "prof-photo-url", "prof-photo-status", "avatar", (res) => {
+    renderAvatarEl(document.getElementById("prof-avatar-preview"), currentUser?.fullName, res.url);
+    renderAvatarEl(document.getElementById("dash-avatar"), currentUser?.fullName, res.url);
+  });
+
+  // Quick "Edit Profile" shortcut in sidebar header
+  document.getElementById("quick-edit-profile-btn")?.addEventListener("click", () => {
+    setPortalPanel("profile");
+  });
 
   // Auth tabs
   document.querySelectorAll("[data-auth-tab]").forEach((btn) => {
@@ -577,8 +628,10 @@ async function init() {
 
   // Profile update
   const profileForm = document.getElementById("profile-form");
+  const profileAlert = document.getElementById("profile-alert");
   profileForm?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (profileAlert) profileAlert.className = "alert";
     const btn = profileForm.querySelector('button[type="submit"]');
     btn.disabled = true;
     btn.textContent = "Saving...";
@@ -588,16 +641,55 @@ async function init() {
         institution: profileForm.institution.value.trim(),
         academicLevel: profileForm.academicLevel.value,
         discipline: profileForm.discipline.value.trim(),
+        phone: profileForm.phone ? profileForm.phone.value.trim() : "",
         orcid: profileForm.orcid.value.trim(),
+        profileUrl: profileForm.profileUrl ? profileForm.profileUrl.value.trim() : "",
+        photoUrl: profileForm.photoUrl ? profileForm.photoUrl.value.trim() : "",
         bio: profileForm.bio.value.trim(),
       });
+      if (profileAlert) {
+        profileAlert.textContent = "Profile updated and synced with the ICR Community Directory!";
+        profileAlert.className = "alert alert-success show";
+      }
       showToast("Researcher profile updated!", "success");
       await renderDashboard(res.user);
     } catch (err) {
+      if (profileAlert) {
+        profileAlert.textContent = err.message || "Could not update profile.";
+        profileAlert.className = "alert alert-error show";
+      }
       showToast(err.message || "Could not update profile.", "error");
     } finally {
       btn.disabled = false;
       btn.textContent = "Save Profile Changes";
+    }
+  });
+
+  // Self-delete account (Danger Zone)
+  const deleteAccForm = document.getElementById("delete-account-form");
+  const deleteAccAlert = document.getElementById("delete-acc-alert");
+  deleteAccForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!confirm("Are you sure you want to permanently delete your ICR account? This cannot be undone.")) return;
+    if (deleteAccAlert) deleteAccAlert.className = "alert";
+    const btn = deleteAccForm.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = "Deleting...";
+    try {
+      await ICR.deleteMyAccount(deleteAccForm.password.value);
+      deleteAccForm.reset();
+      currentUser = null;
+      document.getElementById("dashboard-view").style.display = "none";
+      document.getElementById("auth-view").style.display = "block";
+      showToast("Your ICR account has been permanently deleted.", "info");
+    } catch (err) {
+      if (deleteAccAlert) {
+        deleteAccAlert.textContent = err.message || "Could not delete account.";
+        deleteAccAlert.className = "alert alert-error show";
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Delete My Account";
     }
   });
 

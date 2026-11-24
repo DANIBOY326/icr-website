@@ -13,6 +13,7 @@ const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const ALLOWED_PDF_TYPES = new Set(["application/pdf"]);
 const MAX_PDF_BYTES = 4.5 * 1024 * 1024;
 const MAX_IMG_BYTES = 3.5 * 1024 * 1024;
+const MAX_AVATAR_BYTES = 2.5 * 1024 * 1024;
 
 export default async function handler(req) {
   if (req.method !== "POST") {
@@ -41,6 +42,10 @@ export default async function handler(req) {
     if (!ALLOWED_IMAGE_TYPES.has(contentType)) {
       return errorResponse("Only JPG, PNG, or WebP images are allowed.", 400);
     }
+  } else if (kind === "avatar") {
+    if (!ALLOWED_IMAGE_TYPES.has(contentType)) {
+      return errorResponse("Only JPG, PNG, or WebP profile photos are allowed.", 400);
+    }
   } else {
     if (!ALLOWED_PDF_TYPES.has(contentType)) {
       return errorResponse("Only PDF manuscripts (.pdf) are allowed.", 400);
@@ -55,7 +60,7 @@ export default async function handler(req) {
     return errorResponse("Could not decode uploaded file.", 400);
   }
 
-  const maxBytes = kind === "image" ? MAX_IMG_BYTES : MAX_PDF_BYTES;
+  const maxBytes = kind === "avatar" ? MAX_AVATAR_BYTES : kind === "image" ? MAX_IMG_BYTES : MAX_PDF_BYTES;
   if (!buffer.length || buffer.length > maxBytes) {
     const mb = (maxBytes / (1024 * 1024)).toFixed(1);
     return errorResponse(`File size must be under ${mb} MB.`, 413);

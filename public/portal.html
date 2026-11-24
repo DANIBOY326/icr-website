@@ -248,18 +248,19 @@
           <div class="portal-grid">
             <aside class="card" style="gap:18px;">
               <div class="person-top">
-                <div id="dash-avatar" class="avatar-circle">IC</div>
-                <div>
+                <div id="dash-avatar" class="avatar-circle" style="overflow:hidden;">IC</div>
+                <div style="min-width:0;">
                   <h2 id="dash-name" style="font-size:1.1rem; margin-bottom:2px;">Researcher</h2>
                   <div id="dash-role" class="person-role">ICR Member</div>
                   <div id="dash-institution" style="font-size:0.8rem; color:var(--ink-400);">Campus Network</div>
+                  <button type="button" id="quick-edit-profile-btn" class="btn btn-ghost btn-sm" style="padding:2px 0; margin-top:4px; font-size:0.78rem; color:var(--crimson-600); font-weight:600;">Edit Profile →</button>
                 </div>
               </div>
 
               <div class="portal-nav">
                 <button type="button" class="portal-nav-btn active" data-portal-tab="submit">Paper Submission Studio</button>
                 <button type="button" class="portal-nav-btn" data-portal-tab="activity">My Papers &amp; RSVPs</button>
-                <button type="button" class="portal-nav-btn" data-portal-tab="profile">Scholar Profile</button>
+                <button type="button" class="portal-nav-btn" data-portal-tab="profile">Manage &amp; Edit Profile</button>
                 <div id="exec-nav-group" style="display:none; padding-top:10px; margin-top:6px; border-top:1px solid var(--border); gap:6px;">
                   <div style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--crimson-600); padding:0 10px 4px;">Executive CMS</div>
                   <button type="button" class="portal-nav-btn" data-portal-tab="exec">Review Queue &amp; Applications</button>
@@ -367,35 +368,89 @@
                 </div>
               </section>
 
-              <!-- Panel 3: Scholar Profile -->
+              <!-- Panel 3: Manage & Edit Scholar Profile -->
               <section class="card" data-portal-panel="profile" style="display:none;">
-                <div class="kicker">Researcher Identity</div>
-                <h2 style="font-size:1.45rem; margin-bottom:16px;">Edit Scholar Profile</h2>
+                <div class="kicker">Researcher Identity &amp; Account</div>
+                <h2 style="font-size:1.45rem; margin-bottom:6px;">Manage &amp; Edit Profile</h2>
+                <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:18px;">Update your scholar details, academic level, photo, and bio—your public card on <strong>/community</strong> updates automatically.</p>
+
+                <div id="profile-alert" class="alert" role="alert"></div>
+
+                <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; padding:16px; border-radius:14px; background:var(--surface-50); border:1px solid var(--border); margin-bottom:20px;">
+                  <div id="prof-avatar-preview" class="avatar-circle" style="width:68px; height:68px; font-size:1.25rem; overflow:hidden;">IC</div>
+                  <div style="flex:1 1 240px;">
+                    <div id="prof-email-display" style="font-weight:700; color:var(--navy-900); font-size:0.95rem;">researcher@university.edu</div>
+                    <div id="prof-role-display" style="font-size:0.82rem; color:var(--crimson-600); font-weight:600; margin-bottom:8px;">ICR Member</div>
+                    <label class="form-label" for="prof-photo-file" style="margin-bottom:4px; display:block;">Upload Profile Photo <span style="font-weight:400; color:var(--ink-400);">(JPG/PNG/WebP · Max 2.5 MB)</span></label>
+                    <input id="prof-photo-file" type="file" accept="image/jpeg,image/png,image/webp" class="form-input" style="padding:7px 10px;" />
+                    <span id="prof-photo-status" class="form-hint">Square headshot photos look sharpest across the portal &amp; directory.</span>
+                  </div>
+                </div>
+
                 <form id="profile-form">
+                  <input id="prof-photo-url" name="photoUrl" type="hidden" />
                   <div class="form-grid">
                     <div class="form-field">
-                      <label class="form-label" for="prof-name">Full Name</label>
+                      <label class="form-label" for="prof-name">Full Name <span class="req">*</span></label>
                       <input id="prof-name" name="fullName" type="text" class="form-input" required />
                     </div>
                     <div class="form-field">
-                      <label class="form-label" for="prof-inst">Institution</label>
-                      <input id="prof-inst" name="institution" type="text" class="form-input" />
+                      <label class="form-label" for="prof-inst">Campus / Institution</label>
+                      <input id="prof-inst" name="institution" type="text" class="form-input" placeholder="University, Polytechnic, or Teaching Hospital" />
                     </div>
                     <div class="form-field">
                       <label class="form-label" for="prof-level">Academic Level</label>
-                      <input id="prof-level" name="academicLevel" type="text" class="form-input" />
+                      <select id="prof-level" name="academicLevel" class="form-select">
+                        <optgroup label="Diploma &amp; Undergraduate">
+                          <option value="ND / OND">ND / OND (National Diploma)</option>
+                          <option value="NCE">NCE (Nigeria Certificate in Education)</option>
+                          <option value="HND">HND (Higher National Diploma)</option>
+                          <option value="Undergraduate (BSc / BA / BEd)">Undergraduate (BSc / BA / BEd)</option>
+                          <option value="BTech / BEng">BTech / BEng (Technology / Engineering)</option>
+                        </optgroup>
+                        <optgroup label="Medical, Health &amp; Professional Degrees">
+                          <option value="MBBS / MBChB / MD (Medicine &amp; Surgery)">MBBS / MBChB / MD (Medicine &amp; Surgery)</option>
+                          <option value="BDS (Dental Surgery)">BDS (Dental Surgery)</option>
+                          <option value="BNSc / RN / RM (Nursing &amp; Midwifery)">BNSc / RN / RM (Nursing &amp; Midwifery)</option>
+                          <option value="BPharm / PharmD (Pharmacy)">BPharm / PharmD (Pharmacy)</option>
+                          <option value="BMLS / Allied Health Sciences">BMLS / Allied Health (Med Lab, Physio, Optometry, Radiography)</option>
+                          <option value="DVM (Veterinary Medicine)">DVM (Veterinary Medicine)</option>
+                          <option value="LLB / BL (Law)">LLB / BL (Law)</option>
+                          <option value="BArch / B.Agric / Other Professional Degree">BArch / B.Agric / Other Professional Degree</option>
+                        </optgroup>
+                        <optgroup label="Postgraduate &amp; Doctoral">
+                          <option value="PGD">PGD (Postgraduate Diploma)</option>
+                          <option value="Postgraduate (MSc / MA / MTech / MBA / MPH / LLM)">Postgraduate (MSc / MA / MTech / MBA / MPH / LLM)</option>
+                          <option value="MPhil">MPhil (Master of Philosophy)</option>
+                          <option value="Medical Residency / Clinical Fellowship">Medical Residency / Clinical Fellowship</option>
+                          <option value="Doctoral / PhD">Doctoral / PhD</option>
+                          <option value="Postdoctoral Fellow">Postdoctoral Fellow</option>
+                        </optgroup>
+                        <optgroup label="Faculty &amp; Independent">
+                          <option value="Early-Career Academic / Lecturer">Early-Career Academic / Lecturer</option>
+                          <option value="Independent Researcher / Practitioner">Independent Researcher / Practitioner</option>
+                        </optgroup>
+                      </select>
                     </div>
                     <div class="form-field">
-                      <label class="form-label" for="prof-disc">Discipline</label>
+                      <label class="form-label" for="prof-disc">Research Discipline</label>
                       <input id="prof-disc" name="discipline" type="text" class="form-input" />
                     </div>
-                    <div class="form-field full">
+                    <div class="form-field">
+                      <label class="form-label" for="prof-phone">Phone / WhatsApp (optional)</label>
+                      <input id="prof-phone" name="phone" type="tel" class="form-input" placeholder="+234 ..." />
+                    </div>
+                    <div class="form-field">
                       <label class="form-label" for="prof-orcid">ORCID iD (optional)</label>
                       <input id="prof-orcid" name="orcid" type="text" class="form-input" placeholder="0000-0002-1825-0097" />
                     </div>
                     <div class="form-field full">
+                      <label class="form-label" for="prof-url">Google Scholar / LinkedIn / Portfolio URL (optional)</label>
+                      <input id="prof-url" name="profileUrl" type="url" class="form-input" placeholder="https://scholar.google.com/... or https://linkedin.com/in/..." />
+                    </div>
+                    <div class="form-field full">
                       <label class="form-label" for="prof-bio">Academic Bio</label>
-                      <textarea id="prof-bio" name="bio" class="form-textarea"></textarea>
+                      <textarea id="prof-bio" name="bio" class="form-textarea" placeholder="Summarize your research focus, methodology interests, and collaboration goals..."></textarea>
                     </div>
                   </div>
                   <div style="margin-top:20px; display:flex; justify-content:flex-end;">
@@ -426,6 +481,20 @@
                     <div style="margin-top:16px; display:flex; justify-content:flex-end;">
                       <button type="submit" class="btn btn-navy">Update Password</button>
                     </div>
+                  </form>
+                </div>
+
+                <div id="self-delete-section" style="margin-top:28px; padding-top:24px; border-top:1px solid var(--border);">
+                  <div class="kicker" style="color:var(--danger);">Danger Zone</div>
+                  <h3 style="font-size:1.15rem; margin-bottom:6px;">Delete My Account</h3>
+                  <p style="font-size:0.88rem; color:var(--ink-600); margin-bottom:14px;">Permanently delete your ICR Portal login and remove your card from the Community Researchers directory.</p>
+                  <div id="delete-acc-alert" class="alert" role="alert"></div>
+                  <form id="delete-account-form" style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+                    <div class="form-field" style="flex:1 1 240px;">
+                      <label class="form-label" for="del-acc-pass">Confirm Current Password</label>
+                      <input id="del-acc-pass" name="password" type="password" class="form-input" placeholder="Enter your current password" required />
+                    </div>
+                    <button type="submit" class="btn btn-outline" style="color:var(--danger); border-color:rgba(185,28,28,0.35);">Delete My Account</button>
                   </form>
                 </div>
               </section>

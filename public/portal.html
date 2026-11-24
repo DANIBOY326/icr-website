@@ -265,6 +265,7 @@
                   <button type="button" class="portal-nav-btn" data-portal-tab="exec">Review Queue &amp; Applications</button>
                   <button type="button" class="portal-nav-btn" data-portal-tab="exec-events">Manage Events &amp; Flyers</button>
                   <button type="button" class="portal-nav-btn" data-portal-tab="exec-team">Manage Executive Council</button>
+                  <button type="button" class="portal-nav-btn" data-portal-tab="exec-users">Manage Member Accounts</button>
                 </div>
               </div>
 
@@ -579,6 +580,19 @@
                   <div class="kicker">Active Roster</div>
                   <h3 style="margin-bottom:12px;">Current Executive Council</h3>
                   <div id="exec-team-list" style="display:grid; gap:12px;"></div>
+                </div>
+              </section>
+
+              <!-- Panel 7: Registered Member Accounts Manager -->
+              <section class="card" data-portal-panel="exec-users" style="display:none; gap:20px;">
+                <div>
+                  <div class="kicker">Account Administration</div>
+                  <h2 style="font-size:1.45rem; margin-bottom:6px;">Manage Registered Member Accounts</h2>
+                  <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:16px;">View all registered ICR Portal accounts, remove test or duplicate accounts (which also removes them from <strong>/community</strong>), or promote/demote Executive access.</p>
+                  <div class="form-field full" style="margin-bottom:14px;">
+                    <input id="exec-users-search" type="search" class="form-input" placeholder="Search accounts by name, email, or institution..." aria-label="Search member accounts" />
+                  </div>
+                  <div id="exec-users-list" style="display:grid; gap:12px;"></div>
                 </div>
               </section>
             </div>

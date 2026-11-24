@@ -534,4 +534,27 @@ export const ICR = {
       body: JSON.stringify({ id }),
     });
   },
+
+  async getAdminUsers() {
+    try {
+      return await apiFetch("/api/admin-users");
+    } catch (e) {
+      if (e.isApiError) throw e;
+      return { ok: true, users: readLocal(LOCAL_KEYS.users, []) };
+    }
+  },
+
+  async updateUserRole(id, role) {
+    return apiFetch("/api/admin-users", {
+      method: "PATCH",
+      body: JSON.stringify({ id, role }),
+    });
+  },
+
+  async deleteUserAccount(id) {
+    return apiFetch("/api/admin-users", {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+    });
+  },
 };

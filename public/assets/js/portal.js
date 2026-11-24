@@ -4,6 +4,7 @@ import { escapeHtml, getInitials, showToast } from "./app.js";
 let currentUser = null;
 let cachedEvents = [];
 let cachedExecutives = [];
+let cachedAdminUsers = [];
 
 function setAuthTab(mode) {
   const loginForm = document.getElementById("login-form");
@@ -160,6 +161,50 @@ function renderExecTeamList(executives) {
     : `<p style="color:var(--ink-400);">No Executive Council officers added yet.</p>`;
 }
 
+function renderExecUsersList(users, filterQuery = "") {
+  const wrap = document.getElementById("exec-users-list");
+  if (!wrap) return;
+  const q = filterQuery.trim().toLowerCase();
+  const filtered = (users || []).filter((u) => {
+    if (!q) return true;
+    return [u.fullName, u.email, u.institution, u.academicLevel, u.discipline, u.role]
+      .filter(Boolean)
+      .some((v) => String(v).toLowerCase().includes(q));
+  });
+
+  wrap.innerHTML = filtered.length
+    ? filtered
+        .map(
+          (u) => `
+        <div class="card" style="padding:16px; gap:10px;">
+          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <strong>${escapeHtml(u.fullName)}</strong>
+                <span class="badge ${u.role === "executive" ? "badge-crimson" : "badge-navy"}">${escapeHtml(u.role)}</span>
+                ${u.isEnvPrimary ? `<span class="badge badge-gold">Primary Env Executive</span>` : ""}
+                ${u.isSelf ? `<span class="badge badge-success">You</span>` : ""}
+              </div>
+              <div style="font-size:0.84rem; color:var(--ink-600); margin-top:3px;">${escapeHtml(u.email)} · ${escapeHtml(u.academicLevel || "Member")}</div>
+              <div style="font-size:0.8rem; color:var(--ink-400);">${escapeHtml(u.institution || "ICR Campus Network")} · ${escapeHtml(u.discipline || "General")}</div>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              ${
+                !u.isEnvPrimary && !u.isSelf
+                  ? `<button type="button" class="btn btn-outline btn-sm" data-toggle-role="${escapeHtml(u.id)}" data-next-role="${u.role === "executive" ? "member" : "executive"}">
+                       ${u.role === "executive" ? "Set as Member" : "Make Executive"}
+                     </button>
+                     <button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger);" data-delete-user="${escapeHtml(u.id)}" data-delete-email="${escapeHtml(u.email)}">Delete Account</button>`
+                  : `<span style="font-size:0.78rem; color:var(--ink-400);">Protected session</span>`
+              }
+            </div>
+          </div>
+        </div>`
+        )
+        .join("")
+    : `<p style="color:var(--ink-400);">No matching member accounts found.</p>`;
+}
+
 async function refreshMyActivity() {
   const [papersRes, eventsRes] = await Promise.all([
     ICR.getPapers(currentUser?.role === "executive" ? { scope: "all" } : {}),
@@ -304,6 +349,15 @@ async function refreshMyActivity() {
     try {
       const membersRes = await ICR.getMembers();
       renderExecTeamList(membersRes.executives || []);
+    } catch {
+      // ignore
+    }
+
+    try {
+      const usersRes = await ICR.getAdminUsers();
+      cachedAdminUsers = usersRes.users || [];
+      const searchVal = document.getElementById("exec-users-search")?.value || "";
+      renderExecUsersList(cachedAdminUsers, searchVal);
     } catch {
       // ignore
     }
@@ -756,6 +810,39 @@ async function init() {
         renderExecTeamList(res.executives || []);
       } catch (err) {
         showToast(err.message || "Remove failed.", "error");
+        delBtn.disabled = false;
+      }
+    }
+  });
+
+  // Executive Member Accounts search + role toggle + delete
+  document.getElementById("exec-users-search")?.addEventListener("input", (e) => {
+    renderExecUsersList(cachedAdminUsers, e.target.value);
+  });
+
+  document.getElementById("exec-users-list")?.addEventListener("click", async (e) => {
+    const roleBtn = e.target.closest("[data-toggle-role]");
+    const delBtn = e.target.closest("[data-delete-user]");
+    if (roleBtn) {
+      roleBtn.disabled = true;
+      try {
+        await ICR.updateUserRole(roleBtn.dataset.toggleRole, roleBtn.dataset.nextRole);
+        showToast("Account role updated!", "success");
+        await refreshMyActivity();
+      } catch (err) {
+        showToast(err.message || "Could not update role.", "error");
+        roleBtn.disabled = false;
+      }
+    } else if (delBtn) {
+      const email = delBtn.dataset.deleteEmail || "this account";
+      if (!confirm(`Permanently delete ${email}? This will also remove them from the Community Researchers directory so the email can register fresh.`)) return;
+      delBtn.disabled = true;
+      try {
+        const res = await ICR.deleteUserAccount(delBtn.dataset.deleteUser);
+        showToast(res.message || "Account deleted!", "info");
+        await refreshMyActivity();
+      } catch (err) {
+        showToast(err.message || "Could not delete account.", "error");
         delBtn.disabled = false;
       }
     }

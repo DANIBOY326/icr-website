@@ -109,7 +109,10 @@
                   <input id="login-email" name="email" type="email" class="form-input" placeholder="researcher@university.edu" required />
                 </div>
                 <div class="form-field full">
-                  <label class="form-label" for="login-password">Password</label>
+                  <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                    <label class="form-label" for="login-password">Password</label>
+                    <button type="button" id="forgot-password-btn" class="btn btn-ghost btn-sm" style="padding:2px 6px; font-size:0.82rem; color:var(--crimson-600); font-weight:600;">Forgot password?</button>
+                  </div>
                   <input id="login-password" name="password" type="password" class="form-input" placeholder="Enter your password" required />
                 </div>
               </div>
@@ -120,6 +123,55 @@
                 Protected with scrypt password hashing &amp; signed HttpOnly session cookies via Netlify Functions.
               </p>
             </form>
+
+            <!-- Forgot / Reset Password View -->
+            <div id="reset-view" style="display:none;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">
+                <div>
+                  <h3 style="font-size:1.15rem; margin-bottom:2px;">Reset Your Password</h3>
+                  <p style="font-size:0.85rem; color:var(--ink-600); margin:0;">Request a 1-time 6-digit reset code, then set a new password below.</p>
+                </div>
+                <button type="button" id="back-to-login-btn" class="btn btn-outline btn-sm">← Back to Sign In</button>
+              </div>
+
+              <form id="reset-request-form" style="padding:14px; border-radius:12px; background:var(--surface-50); border:1px solid var(--border); margin-bottom:18px;">
+                <div style="font-size:0.76rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--navy-800); margin-bottom:10px;">Step 1 · Request 6-Digit Reset Code</div>
+                <div class="form-grid">
+                  <div class="form-field full">
+                    <label class="form-label" for="reset-req-email">Account Email Address <span class="req">*</span></label>
+                    <input id="reset-req-email" name="email" type="email" class="form-input" placeholder="researcher@university.edu" required />
+                  </div>
+                </div>
+                <div style="margin-top:12px;">
+                  <button type="submit" class="btn btn-navy" style="width:100%;">Request Reset Code</button>
+                </div>
+              </form>
+
+              <form id="reset-confirm-form">
+                <div style="font-size:0.76rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--crimson-600); margin-bottom:10px;">Step 2 · Enter Code &amp; New Password</div>
+                <div class="form-grid">
+                  <div class="form-field">
+                    <label class="form-label" for="reset-conf-email">Account Email <span class="req">*</span></label>
+                    <input id="reset-conf-email" name="email" type="email" class="form-input" placeholder="researcher@university.edu" required />
+                  </div>
+                  <div class="form-field">
+                    <label class="form-label" for="reset-code">6-Digit Reset Code <span class="req">*</span></label>
+                    <input id="reset-code" name="code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" class="form-input" placeholder="e.g., 482916" autocomplete="one-time-code" required />
+                  </div>
+                  <div class="form-field">
+                    <label class="form-label" for="reset-new-pass">New Password (min 8 chars) <span class="req">*</span></label>
+                    <input id="reset-new-pass" name="newPassword" type="password" class="form-input" placeholder="Create new password" minlength="8" required />
+                  </div>
+                  <div class="form-field">
+                    <label class="form-label" for="reset-conf-pass">Confirm New Password <span class="req">*</span></label>
+                    <input id="reset-conf-pass" name="confirmPassword" type="password" class="form-input" placeholder="Re-enter new password" minlength="8" required />
+                  </div>
+                </div>
+                <div style="margin-top:16px;">
+                  <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Reset Password &amp; Sign In</button>
+                </div>
+              </form>
+            </div>
 
             <!-- Register Form -->
             <form id="register-form" style="display:none;">
@@ -349,6 +401,32 @@
                     <button type="submit" class="btn btn-primary">Save Profile Changes</button>
                   </div>
                 </form>
+
+                <div style="margin-top:28px; padding-top:24px; border-top:1px solid var(--border);">
+                  <div class="kicker">Account Security</div>
+                  <h3 style="font-size:1.2rem; margin-bottom:6px;">Change Password</h3>
+                  <p style="font-size:0.88rem; color:var(--ink-600); margin-bottom:14px;">Update your account password anytime while signed in.</p>
+                  <div id="change-pass-alert" class="alert" role="alert"></div>
+                  <form id="change-password-form">
+                    <div class="form-grid">
+                      <div class="form-field full">
+                        <label class="form-label" for="cp-current">Current Password <span class="req">*</span></label>
+                        <input id="cp-current" name="currentPassword" type="password" class="form-input" placeholder="Enter your current password" required />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="cp-new">New Password (min 8 chars) <span class="req">*</span></label>
+                        <input id="cp-new" name="newPassword" type="password" class="form-input" placeholder="At least 8 characters" minlength="8" required />
+                      </div>
+                      <div class="form-field">
+                        <label class="form-label" for="cp-confirm">Confirm New Password <span class="req">*</span></label>
+                        <input id="cp-confirm" name="confirmPassword" type="password" class="form-input" placeholder="Re-enter new password" minlength="8" required />
+                      </div>
+                    </div>
+                    <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+                      <button type="submit" class="btn btn-navy">Update Password</button>
+                    </div>
+                  </form>
+                </div>
               </section>
 
               <!-- Panel 4: Executive Review Queue -->
@@ -358,6 +436,12 @@
                   <h2 style="font-size:1.45rem; margin-bottom:12px;">Manuscript Peer-Review Queue</h2>
                   <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:14px;">Inspect attached PDFs, approve member working papers to publish them live in the ICR Research Archive, or remove drafts.</p>
                   <div id="exec-papers-list" style="display:grid; gap:12px;"></div>
+                </div>
+                <div style="padding-top:20px; border-top:1px solid var(--border);">
+                  <div class="kicker">Account Recovery Desk</div>
+                  <h2 style="font-size:1.45rem; margin-bottom:6px;">Pending Password Reset Requests</h2>
+                  <p style="font-size:0.88rem; color:var(--ink-600); margin-bottom:12px;">When a member clicks <strong>Forgot password?</strong>, their 1-time 6-digit code (valid 30 mins) appears here so an Executive officer can send it securely.</p>
+                  <div id="exec-resets-list" style="display:grid; gap:12px;"></div>
                 </div>
                 <div style="padding-top:20px; border-top:1px solid var(--border);">
                   <div class="kicker">Onboarding</div>

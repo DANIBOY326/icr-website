@@ -8,11 +8,15 @@ let cachedExecutives = [];
 function setAuthTab(mode) {
   const loginForm = document.getElementById("login-form");
   const regForm = document.getElementById("register-form");
+  const resetView = document.getElementById("reset-view");
+  const authAlert = document.getElementById("auth-alert");
+  if (authAlert) authAlert.className = "alert";
   document.querySelectorAll("[data-auth-tab]").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.authTab === mode);
   });
   if (loginForm) loginForm.style.display = mode === "login" ? "block" : "none";
   if (regForm) regForm.style.display = mode === "register" ? "block" : "none";
+  if (resetView) resetView.style.display = mode === "reset" ? "block" : "none";
 }
 
 function setPortalPanel(panelId) {
@@ -263,6 +267,40 @@ async function refreshMyActivity() {
 
     renderExecEventsList(eventsRes.events || []);
 
+    const resetsWrap = document.getElementById("exec-resets-list");
+    if (resetsWrap) {
+      try {
+        const rstRes = await ICR.getResetRequests();
+        const requests = rstRes.requests || [];
+        resetsWrap.innerHTML = requests.length
+          ? requests
+              .map((r) => {
+                const minsLeft = Math.max(1, Math.round((new Date(r.expiresAt).getTime() - Date.now()) / 60000));
+                const mailBody = `Hello ${r.fullName},\n\nHere is your 1-time ICR Member Portal password reset code (expires in ${minsLeft} minutes):\n\nReset Code: ${r.code}\n\nVisit https://icresearchers.netlify.app/portal, click "Forgot password?", and enter this code under Step 2 to set your new password.\n\n— ICR Executive Council`;
+                const mailHref = `mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent("ICR Member Portal — Your Password Reset Code")}&body=${encodeURIComponent(mailBody)}`;
+                return `
+              <div class="card" style="padding:16px; gap:10px;">
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;">
+                  <div>
+                    <strong>${escapeHtml(r.fullName)}</strong>
+                    <div style="font-size:0.84rem; color:var(--ink-600);">${escapeHtml(r.email)} · Expires in ~${minsLeft} min</div>
+                  </div>
+                  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <span class="badge badge-crimson" style="font-family:monospace; font-size:0.92rem; letter-spacing:0.12em;">${escapeHtml(r.code)}</span>
+                    <button type="button" class="btn btn-outline btn-sm" data-copy-reset="${escapeHtml(r.code)}">Copy Code</button>
+                    <a href="${mailHref}" class="btn btn-primary btn-sm">Email Code</a>
+                    <button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger);" data-dismiss-reset="${escapeHtml(r.id)}">Dismiss</button>
+                  </div>
+                </div>
+              </div>`;
+              })
+              .join("")
+          : `<p style="color:var(--ink-400);">No active password reset requests right now.</p>`;
+      } catch {
+        resetsWrap.innerHTML = `<p style="color:var(--ink-400);">No active password reset requests right now.</p>`;
+      }
+    }
+
     try {
       const membersRes = await ICR.getMembers();
       renderExecTeamList(membersRes.executives || []);
@@ -281,6 +319,147 @@ async function init() {
   // Auth tabs
   document.querySelectorAll("[data-auth-tab]").forEach((btn) => {
     btn.addEventListener("click", () => setAuthTab(btn.dataset.authTab));
+  });
+
+  // Forgot password toggle
+  document.getElementById("forgot-password-btn")?.addEventListener("click", () => {
+    const typedEmail = document.getElementById("login-email")?.value?.trim() || "";
+    setAuthTab("reset");
+    if (typedEmail) {
+      const reqEmail = document.getElementById("reset-req-email");
+      const confEmail = document.getElementById("reset-conf-email");
+      if (reqEmail) reqEmail.value = typedEmail;
+      if (confEmail) confEmail.value = typedEmail;
+    }
+  });
+
+  document.getElementById("back-to-login-btn")?.addEventListener("click", () => {
+    setAuthTab("login");
+  });
+
+  // Reset Password — Step 1: Request 6-digit code
+  const resetReqForm = document.getElementById("reset-request-form");
+  resetReqForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const authAlert = document.getElementById("auth-alert");
+    authAlert.className = "alert";
+    const btn = resetReqForm.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = "Generating Code...";
+    try {
+      const email = resetReqForm.email.value.trim();
+      const res = await ICR.requestPasswordReset(email);
+      const confEmail = document.getElementById("reset-conf-email");
+      if (confEmail) confEmail.value = email;
+      authAlert.textContent = res.message || "Reset code requested.";
+      authAlert.className = "alert alert-success show";
+      showToast("Password reset request processed.", "success");
+    } catch (err) {
+      authAlert.textContent = err.message || "Could not process password reset request.";
+      authAlert.className = "alert alert-error show";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Request Reset Code";
+    }
+  });
+
+  // Reset Password — Step 2: Confirm code & set new password
+  const resetConfForm = document.getElementById("reset-confirm-form");
+  resetConfForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const authAlert = document.getElementById("auth-alert");
+    authAlert.className = "alert";
+    const newPassword = resetConfForm.newPassword.value;
+    const confirmPassword = resetConfForm.confirmPassword.value;
+    if (newPassword !== confirmPassword) {
+      authAlert.textContent = "New password and confirmation do not match.";
+      authAlert.className = "alert alert-error show";
+      return;
+    }
+    const btn = resetConfForm.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = "Resetting Password...";
+    try {
+      const res = await ICR.confirmPasswordReset({
+        email: resetConfForm.email.value.trim(),
+        code: resetConfForm.code.value.trim(),
+        newPassword,
+      });
+      resetConfForm.reset();
+      resetReqForm?.reset();
+      showToast(res.message || "Password reset! Welcome back.", "success");
+      await renderDashboard(res.user);
+    } catch (err) {
+      authAlert.textContent = err.message || "Password reset failed.";
+      authAlert.className = "alert alert-error show";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Reset Password & Sign In";
+    }
+  });
+
+  // Signed-in Change Password form
+  const changePassForm = document.getElementById("change-password-form");
+  const changePassAlert = document.getElementById("change-pass-alert");
+  changePassForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (changePassAlert) changePassAlert.className = "alert";
+    const newPassword = changePassForm.newPassword.value;
+    const confirmPassword = changePassForm.confirmPassword.value;
+    if (newPassword !== confirmPassword) {
+      if (changePassAlert) {
+        changePassAlert.textContent = "New password and confirmation do not match.";
+        changePassAlert.className = "alert alert-error show";
+      }
+      return;
+    }
+    const btn = changePassForm.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = "Updating...";
+    try {
+      const res = await ICR.changePassword({
+        currentPassword: changePassForm.currentPassword.value,
+        newPassword,
+      });
+      changePassForm.reset();
+      if (changePassAlert) {
+        changePassAlert.textContent = res.message || "Password updated successfully!";
+        changePassAlert.className = "alert alert-success show";
+      }
+      showToast("Password updated!", "success");
+    } catch (err) {
+      if (changePassAlert) {
+        changePassAlert.textContent = err.message || "Could not update password.";
+        changePassAlert.className = "alert alert-error show";
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Update Password";
+    }
+  });
+
+  // Executive Password Reset Desk actions (Copy Code / Dismiss)
+  document.getElementById("exec-resets-list")?.addEventListener("click", async (e) => {
+    const copyBtn = e.target.closest("[data-copy-reset]");
+    const dismissBtn = e.target.closest("[data-dismiss-reset]");
+    if (copyBtn) {
+      try {
+        await navigator.clipboard.writeText(copyBtn.dataset.copyReset);
+        showToast("1-time reset code copied!", "success");
+      } catch {
+        showToast(`Reset code: ${copyBtn.dataset.copyReset}`, "info");
+      }
+    } else if (dismissBtn) {
+      dismissBtn.disabled = true;
+      try {
+        await ICR.dismissResetRequest(dismissBtn.dataset.dismissReset);
+        showToast("Reset request dismissed.", "info");
+        await refreshMyActivity();
+      } catch (err) {
+        showToast(err.message || "Could not dismiss request.", "error");
+        dismissBtn.disabled = false;
+      }
+    }
   });
 
   // Portal sidebar tabs

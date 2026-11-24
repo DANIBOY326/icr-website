@@ -497,4 +497,41 @@ export const ICR = {
       return { ok: true, deletedId: id, executives: dir.executives };
     }
   },
+
+  async requestPasswordReset(email) {
+    return apiFetch("/api/auth-reset", {
+      method: "POST",
+      body: JSON.stringify({ action: "request", email }),
+    });
+  },
+
+  async confirmPasswordReset({ email, code, newPassword }) {
+    return apiFetch("/api/auth-reset", {
+      method: "POST",
+      body: JSON.stringify({ action: "confirm", email, code, newPassword }),
+    });
+  },
+
+  async changePassword({ currentPassword, newPassword }) {
+    return apiFetch("/api/auth-reset", {
+      method: "POST",
+      body: JSON.stringify({ action: "change", currentPassword, newPassword }),
+    });
+  },
+
+  async getResetRequests() {
+    try {
+      return await apiFetch("/api/auth-reset");
+    } catch (e) {
+      if (e.isApiError) throw e;
+      return { ok: true, requests: [], emailAutomationEnabled: false };
+    }
+  },
+
+  async dismissResetRequest(id) {
+    return apiFetch("/api/auth-reset", {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+    });
+  },
 };

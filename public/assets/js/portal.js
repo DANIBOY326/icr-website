@@ -38,6 +38,19 @@ function renderAvatarEl(el, fullName, photoUrl) {
   }
 }
 
+function setEventFlyerPreview(url) {
+  const wrap = document.getElementById("ev-flyer-preview-wrap");
+  const img = document.getElementById("ev-flyer-preview-img");
+  if (!wrap || !img) return;
+  if (url) {
+    img.src = url;
+    wrap.style.display = "block";
+  } else {
+    img.src = "";
+    wrap.style.display = "none";
+  }
+}
+
 function bindFileUploader(fileInputId, targetUrlId, statusId, kind, onUploaded) {
   const fileInput = document.getElementById(fileInputId);
   const urlInput = document.getElementById(targetUrlId);
@@ -47,24 +60,37 @@ function bindFileUploader(fileInputId, targetUrlId, statusId, kind, onUploaded) 
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files?.[0];
     if (!file) return;
-    const maxMb = kind === "avatar" ? 2.5 : kind === "image" ? 3.5 : 4.5;
+    // PDFs cap at 4.5 MB; images auto-optimize in-browser so accept up to 25 MB source files!
+    const maxMb = kind === "pdf" ? 4.5 : 25;
     if (file.size > maxMb * 1024 * 1024) {
       showToast(`File is too large. Max size is ${maxMb} MB.`, "error");
       fileInput.value = "";
       return;
     }
 
-    if (statusEl) statusEl.textContent = `Uploading ${file.name}...`;
+    const parentForm = fileInput.closest("form");
+    const submitBtn = parentForm?.querySelector('button[type="submit"]');
+    const origBtnText = submitBtn?.textContent;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Uploading file...";
+    }
+    if (statusEl) statusEl.textContent = kind === "pdf" ? `Uploading ${file.name}...` : `Optimizing & uploading ${file.name}...`;
     try {
       const res = await ICR.uploadFile(file, kind);
       urlInput.value = res.url;
-      if (statusEl) statusEl.textContent = `Uploaded: ${res.fileName} (${Math.round(res.size / 1024)} KB)`;
+      if (statusEl) statusEl.textContent = `Uploaded: ${res.fileName} (${Math.round(res.size / 1024)} KB) — ready to save!`;
       showToast(`Uploaded ${res.fileName} to ICR Cloud Storage!`, "success");
       if (typeof onUploaded === "function") onUploaded(res);
     } catch (err) {
       if (statusEl) statusEl.textContent = err.message || "Upload failed.";
       showToast(err.message || "File upload failed.", "error");
       fileInput.value = "";
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = origBtnText;
+      }
     }
   });
 }
@@ -144,21 +170,24 @@ function renderExecEventsList(events) {
         .map(
           (ev) => `
         <div class="card" style="padding:16px; gap:10px;">
-          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;">
-            <div style="display:flex; gap:12px; align-items:center;">
+          <div style="display:flex; justify-content:space-between; gap:14px; align-items:center; flex-wrap:wrap;">
+            <div style="display:flex; gap:14px; align-items:center;">
               ${
                 ev.flyerUrl
-                  ? `<img src="${escapeHtml(ev.flyerUrl)}" alt="" style="width:52px; height:52px; object-fit:cover; border-radius:8px; border:1px solid var(--border);" />`
-                  : ""
+                  ? `<img src="${escapeHtml(ev.flyerUrl)}" alt="" style="width:56px; height:74px; object-fit:contain; border-radius:8px; border:1px solid var(--border); background:#f8fafc;" />`
+                  : `<div style="width:56px; height:74px; border-radius:8px; border:1px dashed var(--border-strong); display:flex; align-items:center; justify-content:center; font-size:0.68rem; color:var(--ink-400); text-align:center; padding:4px;">No Flyer</div>`
               }
               <div>
-                <strong>${escapeHtml(ev.title)}</strong>
-                <div style="font-size:0.82rem; color:var(--ink-400);">${escapeHtml(ev.dateLabel)} · ${escapeHtml(ev.venue || "Hybrid")} · ${ev.rsvpCount || 0} RSVPs</div>
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <strong>${escapeHtml(ev.title)}</strong>
+                  ${ev.featured ? `<span class="badge badge-gold">Flagship</span>` : ""}
+                </div>
+                <div style="font-size:0.82rem; color:var(--ink-400); margin-top:2px;">${escapeHtml(ev.dateLabel)} · ${escapeHtml(ev.venue || "Hybrid")} · ${ev.rsvpCount || 0} RSVPs</div>
               </div>
             </div>
             <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-              ${ev.featured ? `<span class="badge badge-gold">Flagship</span>` : ""}
-              <button type="button" class="btn btn-outline btn-sm" data-edit-event="${escapeHtml(ev.id)}">Edit</button>
+              <button type="button" class="btn btn-primary btn-sm" data-quick-flyer="${escapeHtml(ev.id)}">Update Flyer</button>
+              <button type="button" class="btn btn-outline btn-sm" data-edit-event="${escapeHtml(ev.id)}">Edit Details</button>
               <button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger);" data-delete-event="${escapeHtml(ev.id)}">Delete</button>
             </div>
           </div>
@@ -453,7 +482,9 @@ async function refreshMyActivity() {
 async function init() {
   // Bind direct cloud file uploaders
   bindFileUploader("paper-pdf-file", "paper-pdf", "paper-pdf-status", "pdf");
-  bindFileUploader("ev-flyer-file", "ev-flyer-url", "ev-flyer-status", "image");
+  bindFileUploader("ev-flyer-file", "ev-flyer-url", "ev-flyer-status", "image", (res) => {
+    setEventFlyerPreview(res.url);
+  });
   bindFileUploader("ex-photo-file", "ex-photo-url", "ex-photo-status", "image");
   bindFileUploader("prof-photo-file", "prof-photo-url", "prof-photo-status", "avatar", (res) => {
     renderAvatarEl(document.getElementById("prof-avatar-preview"), currentUser?.fullName, res.url);
@@ -808,11 +839,56 @@ async function init() {
   // Executive Events CMS form
   const evForm = document.getElementById("exec-event-form");
   const evAlert = document.getElementById("exec-event-alert");
+  const evHeading = document.getElementById("ev-form-heading");
+  const quickFlyerInput = document.getElementById("quick-flyer-file");
+  let pendingQuickFlyerEventId = null;
+
   document.getElementById("ev-reset-btn")?.addEventListener("click", () => {
     evForm?.reset();
     document.getElementById("ev-id").value = "";
+    if (evHeading) evHeading.textContent = "Create or Edit Upcoming Event";
+    setEventFlyerPreview("");
     const st = document.getElementById("ev-flyer-status");
-    if (st) st.textContent = "Displayed full & uncropped on the Events page.";
+    if (st) st.textContent = "Displayed full & uncropped on /events and the Homepage.";
+  });
+
+  document.getElementById("ev-flyer-url")?.addEventListener("input", (e) => {
+    setEventFlyerPreview(e.target.value.trim());
+  });
+
+  quickFlyerInput?.addEventListener("change", async () => {
+    const file = quickFlyerInput.files?.[0];
+    const targetId = pendingQuickFlyerEventId;
+    pendingQuickFlyerEventId = null;
+    if (!file || !targetId) return;
+
+    const triggerBtn = document.querySelector(`[data-quick-flyer="${CSS.escape(targetId)}"]`);
+    if (triggerBtn) {
+      triggerBtn.disabled = true;
+      triggerBtn.textContent = "Uploading Flyer...";
+    }
+    try {
+      const uploaded = await ICR.uploadFile(file, "image");
+      const saved = await ICR.updateEventFlyer(targetId, uploaded.url);
+      renderExecEventsList(saved.events || []);
+      if (evAlert) {
+        evAlert.textContent = `Flyer updated and published live to /events and Homepage (${Math.round(uploaded.size / 1024)} KB)!`;
+        evAlert.className = "alert alert-success show";
+      }
+      showToast("Event flyer updated live!", "success");
+    } catch (err) {
+      showToast(err.message || "Could not update flyer. Please try a JPG or PNG image.", "error");
+      if (evAlert) {
+        evAlert.textContent = err.message || "Could not update flyer.";
+        evAlert.className = "alert alert-error show";
+      }
+      if (triggerBtn) {
+        triggerBtn.disabled = false;
+        triggerBtn.textContent = "Update Flyer";
+      }
+    } finally {
+      quickFlyerInput.value = "";
+    }
   });
 
   evForm?.addEventListener("submit", async (e) => {
@@ -836,11 +912,13 @@ async function init() {
         tracksText: evForm.tracksText.value,
         featured: evForm.featured.checked,
       });
-      evAlert.textContent = "Event saved and published live to /events!";
+      evAlert.textContent = "Event saved and published live to /events and Homepage!";
       evAlert.className = "alert alert-success show";
       showToast("Event published live!", "success");
       evForm.reset();
       document.getElementById("ev-id").value = "";
+      if (evHeading) evHeading.textContent = "Create or Edit Upcoming Event";
+      setEventFlyerPreview("");
       renderExecEventsList(res.events || []);
     } catch (err) {
       evAlert.textContent = err.message || "Could not save event.";
@@ -852,8 +930,14 @@ async function init() {
   });
 
   document.getElementById("exec-events-list")?.addEventListener("click", async (e) => {
+    const quickFlyerBtn = e.target.closest("[data-quick-flyer]");
     const editBtn = e.target.closest("[data-edit-event]");
     const delBtn = e.target.closest("[data-delete-event]");
+    if (quickFlyerBtn) {
+      pendingQuickFlyerEventId = quickFlyerBtn.dataset.quickFlyer;
+      quickFlyerInput?.click();
+      return;
+    }
     if (editBtn) {
       const ev = cachedEvents.find((item) => item.id === editBtn.dataset.editEvent);
       if (!ev || !evForm) return;
@@ -869,6 +953,8 @@ async function init() {
       evForm.description.value = ev.description || "";
       evForm.tracksText.value = (ev.tracks || []).map((t) => `${t.title}: ${t.detail}`).join("\n");
       evForm.featured.checked = Boolean(ev.featured);
+      if (evHeading) evHeading.textContent = `Editing: ${ev.title}`;
+      setEventFlyerPreview(ev.flyerUrl || "");
       evForm.scrollIntoView({ behavior: "smooth", block: "start" });
       showToast(`Editing "${ev.title}"`, "info");
     } else if (delBtn) {

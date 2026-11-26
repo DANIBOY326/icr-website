@@ -116,6 +116,28 @@ export default async function handler(req) {
     return jsonResponse({ ok: true, event: saved, events }, existingIdx >= 0 ? 200 : 201);
   }
 
+  if (req.method === "PATCH") {
+    const body = await parseJsonBody(req);
+    if (!body) return errorResponse("Invalid JSON payload.", 400);
+
+    const id = cleanString(body.id || "", 80);
+    const flyerUrl = cleanString(body.flyerUrl || "", 320);
+    if (!id || !flyerUrl) {
+      return errorResponse("Event id and flyerUrl are required.", 400);
+    }
+
+    const idx = events.findIndex((e) => e.id === id);
+    if (idx === -1) return errorResponse("Event not found.", 404);
+
+    events[idx] = {
+      ...events[idx],
+      flyerUrl,
+      updatedAt: new Date().toISOString(),
+    };
+    await writeCollection("events", events);
+    return jsonResponse({ ok: true, event: events[idx], events });
+  }
+
   if (req.method === "DELETE") {
     const body = await parseJsonBody(req);
     const id = cleanString(body?.id || "", 80);

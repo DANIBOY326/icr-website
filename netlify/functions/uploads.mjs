@@ -1,7 +1,7 @@
 /**
  * Authenticated File & Image Upload endpoint backed by @netlify/blobs ("icr-media").
- * - Any signed-in member can upload a PDF manuscript (<= 4.5 MB)
- * - Executives can also upload JPG / PNG / WebP images (<= 3.5 MB) for headshots & event flyers
+ * - Any signed-in member can upload a PDF manuscript (<= 4.5 MB) or avatar photo (<= 2.5 MB)
+ * - Executives can upload JPG / PNG / WebP images (<= 4.0 MB) for headshots & event flyers
  */
 import crypto from "node:crypto";
 import { getStore } from "@netlify/blobs";
@@ -12,8 +12,22 @@ const MEDIA_STORE = "icr-media";
 const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const ALLOWED_PDF_TYPES = new Set(["application/pdf"]);
 const MAX_PDF_BYTES = 4.5 * 1024 * 1024;
-const MAX_IMG_BYTES = 3.5 * 1024 * 1024;
+const MAX_IMG_BYTES = 4.0 * 1024 * 1024;
 const MAX_AVATAR_BYTES = 2.5 * 1024 * 1024;
+
+function normalizeMimeType(rawType, fileName, kind) {
+  let ct = String(rawType || "").trim().toLowerCase();
+  if (ct === "image/jpg" || ct === "image/pjpeg") ct = "image/jpeg";
+  if (!ct) {
+    const lower = String(fileName || "").toLowerCase();
+    if (lower.endsWith(".pdf")) ct = "application/pdf";
+    else if (lower.endsWith(".png")) ct = "image/png";
+    else if (lower.endsWith(".webp")) ct = "image/webp";
+    else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) ct = "image/jpeg";
+    else if (kind === "image" || kind === "avatar") ct = "image/jpeg";
+  }
+  return ct;
+}
 
 export default async function handler(req) {
   if (req.method !== "POST") {
@@ -28,12 +42,18 @@ export default async function handler(req) {
   const body = await parseJsonBody(req);
   if (!body) return errorResponse("Invalid JSON upload payload.", 400);
 
-  const kind = cleanString(body.kind || "pdf", 30); // "pdf" | "image"
+  const kind = cleanString(body.kind || "pdf", 30); // "pdf" | "image" | "avatar"
   const fileName = cleanString(body.fileName || "upload", 140).replace(/[^a-zA-Z0-9._-]/g, "_");
-  const contentType = cleanString(body.contentType || "", 80).toLowerCase();
   const dataBase64 = typeof body.dataBase64 === "string" ? body.dataBase64 : "";
 
   if (!dataBase64) return errorResponse("Missing file data.", 400);
+
+  // Extract MIME type from data URL prefix if client sent one
+  let dataUrlMime = "";
+  const dataUrlMatch = dataBase64.match(/^data:([^;]+);base64,/i);
+  if (dataUrlMatch) dataUrlMime = dataUrlMatch[1];
+
+  const contentType = normalizeMimeType(body.contentType || dataUrlMime, fileName, kind);
 
   if (kind === "image") {
     if (session.role !== "executive") {
@@ -78,7 +98,9 @@ export default async function handler(req) {
 
   try {
     const store = getStore(MEDIA_STORE);
-    await store.set(key, buffer, {
+    // Use Web-standard ArrayBuffer slice (guaranteed compatible with @netlify/blobs v8)
+    const arrayBuf = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+    await store.set(key, arrayBuf, {
       metadata: {
         contentType,
         fileName,

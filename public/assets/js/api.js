@@ -447,18 +447,79 @@ export const ICR = {
   },
 
   async uploadFile(file, kind = "pdf") {
-    const dataBase64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result || ""));
-      reader.onerror = () => reject(new Error("Could not read selected file."));
-      reader.readAsDataURL(file);
-    });
+    let fileName = file.name || "upload";
+    let contentType = file.type || "";
+    let dataBase64 = "";
+
+    // Automatically optimize large or non-standard images (e.g., high-res Canva PNGs / phone photos)
+    // so non-technical officers never hit "file too large" errors while keeping flyers razor-sharp.
+    if (kind === "image" || kind === "avatar") {
+      const allowedDirect = ["image/jpeg", "image/png", "image/webp"];
+      const needsOptimize =
+        file.size > 1.6 * 1024 * 1024 ||
+        !allowedDirect.includes(contentType.toLowerCase());
+
+      if (needsOptimize) {
+        try {
+          const optimized = await new Promise((resolve, reject) => {
+            const img = new Image();
+            const objUrl = URL.createObjectURL(file);
+            img.onload = () => {
+              URL.revokeObjectURL(objUrl);
+              const maxDim = kind === "avatar" ? 720 : 1600;
+              let { width, height } = img;
+              if (width > maxDim || height > maxDim) {
+                const ratio = Math.min(maxDim / width, maxDim / height);
+                width = Math.round(width * ratio);
+                height = Math.round(height * ratio);
+              }
+              const canvas = document.createElement("canvas");
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+              ctx.fillStyle = "#ffffff";
+              ctx.fillRect(0, 0, width, height);
+              ctx.drawImage(img, 0, 0, width, height);
+
+              let quality = 0.88;
+              let out = canvas.toDataURL("image/jpeg", quality);
+              // Ensure base64 payload stays comfortably below Netlify's 6MB request cap
+              while (out.length > 3.2 * 1024 * 1024 && quality > 0.55) {
+                quality -= 0.08;
+                out = canvas.toDataURL("image/jpeg", quality);
+              }
+              resolve(out);
+            };
+            img.onerror = () => {
+              URL.revokeObjectURL(objUrl);
+              reject(new Error("Browser could not decode this image format. Try saving as JPG or PNG."));
+            };
+            img.src = objUrl;
+          });
+          dataBase64 = optimized;
+          contentType = "image/jpeg";
+          fileName = fileName.replace(/\.[^.]+$/, "") + ".jpg";
+        } catch (optErr) {
+          if (file.size > 3.8 * 1024 * 1024) throw optErr;
+        }
+      }
+    }
+
+    if (!dataBase64) {
+      dataBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("Could not read selected file."));
+        reader.readAsDataURL(file);
+      });
+    }
+
     return apiFetch("/api/uploads", {
       method: "POST",
       body: JSON.stringify({
         kind,
-        fileName: file.name,
-        contentType: file.type,
+        fileName,
+        contentType,
         dataBase64,
       }),
     });
@@ -487,6 +548,19 @@ export const ICR = {
       else events.unshift(saved);
       writeLocal(LOCAL_KEYS.events, events);
       return { ok: true, event: saved, events };
+    }
+  },
+
+  async updateEventFlyer(id, flyerUrl) {
+    try {
+      return await apiFetch("/api/admin-events", { method: "PATCH", body: JSON.stringify({ id, flyerUrl }) });
+    } catch (e) {
+      if (e.isApiError) throw e;
+      const events = readLocal(LOCAL_KEYS.events, SEED_EVENTS);
+      const target = events.find((ev) => ev.id === id);
+      if (target) target.flyerUrl = flyerUrl;
+      writeLocal(LOCAL_KEYS.events, events);
+      return { ok: true, event: target, events };
     }
   },
 

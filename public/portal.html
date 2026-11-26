@@ -523,9 +523,17 @@
               <!-- Panel 5: Executive Events & Flyers CMS -->
               <section class="card" data-portal-panel="exec-events" style="display:none; gap:26px;">
                 <div>
+                  <div class="kicker">Live Schedule · Quick Flyer Swap</div>
+                  <h2 style="font-size:1.45rem; margin-bottom:6px;">Existing Events &amp; Flyers</h2>
+                  <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:14px;">To replace a flyer on an existing event, simply click <strong>Update Flyer</strong> beside that event—large PNG/JPG flyers are automatically optimized and published live to both <strong>/events</strong> and the <strong>Homepage</strong>.</p>
+                  <input id="quick-flyer-file" type="file" accept="image/*" style="display:none;" />
+                  <div id="exec-events-list" style="display:grid; gap:12px;"></div>
+                </div>
+
+                <div style="padding-top:22px; border-top:1px solid var(--border);">
                   <div class="kicker">No-Code Events CMS</div>
-                  <h2 style="font-size:1.45rem; margin-bottom:6px;">Create or Edit Upcoming Event</h2>
-                  <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:18px;">Publish summits, clinics, or workshops with an uncropped event flyer image—changes go live on <strong>/events</strong> immediately with zero coding.</p>
+                  <h3 id="ev-form-heading" style="font-size:1.35rem; margin-bottom:6px;">Create or Edit Upcoming Event</h3>
+                  <p style="font-size:0.9rem; color:var(--ink-600); margin-bottom:18px;">Create a new summit/workshop, or click <strong>Edit</strong> on any event above to update its title, date, venue, tracks, or flyer.</p>
 
                   <div id="exec-event-alert" class="alert" role="alert"></div>
 
@@ -552,28 +560,38 @@
                       </div>
                       <div class="form-field">
                         <label class="form-label" for="ev-date">Date / Schedule <span class="req">*</span></label>
-                        <input id="ev-date" name="dateLabel" type="text" class="form-input" placeholder="e.g., Saturday, December 12, 2026" required />
+                        <input id="ev-date" name="dateLabel" type="text" class="form-input" placeholder="e.g., Saturday, December 5, 2026" required />
                       </div>
                       <div class="form-field">
                         <label class="form-label" for="ev-time">Time</label>
-                        <input id="ev-time" name="timeLabel" type="text" class="form-input" placeholder="e.g., 10:00 AM – 2:00 PM WAT" />
+                        <input id="ev-time" name="timeLabel" type="text" class="form-input" placeholder="e.g., 10:00 AM WAT" />
                       </div>
                       <div class="form-field">
                         <label class="form-label" for="ev-venue">Venue / Format</label>
-                        <input id="ev-venue" name="venue" type="text" class="form-input" placeholder="e.g., Main Auditorium & Zoom Live" />
+                        <input id="ev-venue" name="venue" type="text" class="form-input" placeholder="e.g., OCF Lecture Hall" />
                       </div>
                       <div class="form-field">
                         <label class="form-label" for="ev-whatsapp">WhatsApp / Registration Group URL</label>
                         <input id="ev-whatsapp" name="whatsappUrl" type="url" class="form-input" placeholder="https://chat.whatsapp.com/..." />
                       </div>
                       <div class="form-field">
-                        <label class="form-label" for="ev-flyer-file">Upload Event Flyer Image <span style="font-weight:400; color:var(--ink-400);">(JPG/PNG/WebP · Max 3.5 MB)</span></label>
-                        <input id="ev-flyer-file" type="file" accept="image/jpeg,image/png,image/webp" class="form-input" style="padding:9px 12px;" />
-                        <span id="ev-flyer-status" class="form-hint">Displayed full &amp; uncropped on the Events page.</span>
+                        <label class="form-label" for="ev-flyer-file">Upload Event Flyer Image <span style="font-weight:400; color:var(--ink-400);">(Any JPG/PNG/WebP — auto-optimized)</span></label>
+                        <input id="ev-flyer-file" type="file" accept="image/*" class="form-input" style="padding:9px 12px;" />
+                        <span id="ev-flyer-status" class="form-hint">Displayed full &amp; uncropped on /events and the Homepage.</span>
                       </div>
                       <div class="form-field">
                         <label class="form-label" for="ev-flyer-url">Flyer Image URL <span style="font-weight:400; color:var(--ink-400);">(Auto-filled on upload)</span></label>
                         <input id="ev-flyer-url" name="flyerUrl" type="text" class="form-input" placeholder="/api/media?key=... or https://..." />
+                      </div>
+                      <div id="ev-flyer-preview-wrap" class="form-field full" style="display:none;">
+                        <label class="form-label">Current Flyer Preview</label>
+                        <div style="display:flex; align-items:center; gap:14px; padding:12px; border-radius:12px; background:var(--surface-50); border:1px solid var(--border);">
+                          <img id="ev-flyer-preview-img" src="" alt="Event flyer preview" style="width:96px; height:auto; max-height:130px; object-fit:contain; border-radius:8px; border:1px solid var(--border); background:#ffffff;" />
+                          <div style="font-size:0.84rem; color:var(--ink-600);">
+                            <strong style="color:var(--navy-900); display:block; margin-bottom:2px;">Flyer ready</strong>
+                            Click <strong>Save &amp; Publish Event</strong> below to publish your updates live.
+                          </div>
+                        </div>
                       </div>
                       <div class="form-field full">
                         <label class="form-label" for="ev-desc">Event Description <span class="req">*</span></label>
@@ -586,7 +604,7 @@
                       <div class="form-field full">
                         <label style="display:inline-flex; align-items:center; gap:10px; font-size:0.9rem; font-weight:600; color:var(--ink-900); cursor:pointer;">
                           <input id="ev-featured" name="featured" type="checkbox" style="width:18px; height:18px;" />
-                          Feature as Flagship Event at the top of /events
+                          Feature as Flagship Event at the top of /events and Homepage
                         </label>
                       </div>
                     </div>
@@ -595,12 +613,6 @@
                       <button type="submit" class="btn btn-primary">Save &amp; Publish Event</button>
                     </div>
                   </form>
-                </div>
-
-                <div style="padding-top:20px; border-top:1px solid var(--border);">
-                  <div class="kicker">Live Schedule</div>
-                  <h3 style="margin-bottom:12px;">Existing Events</h3>
-                  <div id="exec-events-list" style="display:grid; gap:12px;"></div>
                 </div>
               </section>
 

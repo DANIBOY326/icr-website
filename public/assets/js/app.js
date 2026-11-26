@@ -114,8 +114,49 @@ function initNewsletterForms() {
   });
 }
 
+async function initHomeSummitSync() {
+  const flyerImg = document.getElementById("home-summit-flyer");
+  if (!flyerImg) return;
+  try {
+    const res = await ICR.getEvents();
+    const events = res.events || [];
+    const featured = events.find((e) => e.featured) || events[0];
+    if (!featured) return;
+
+    if (featured.flyerUrl) {
+      flyerImg.src = featured.flyerUrl;
+      flyerImg.alt = `${featured.title} official event flyer`;
+    }
+    const eyebrow = document.getElementById("home-summit-eyebrow");
+    const title = document.getElementById("home-summit-title");
+    const tagline = document.getElementById("home-summit-tagline");
+    const desc = document.getElementById("home-summit-desc");
+    const caption = document.getElementById("home-summit-caption");
+    const tracksEl = document.getElementById("home-summit-tracks");
+
+    if (eyebrow && featured.dateLabel) {
+      eyebrow.innerHTML = `<span class="dot"></span>${escapeHtml(featured.badge || "Upcoming Flagship Event")} · ${escapeHtml(featured.dateLabel)}`;
+    }
+    if (title && featured.title) title.textContent = featured.title;
+    if (tagline && featured.tagline) tagline.textContent = featured.tagline;
+    if (desc && featured.description) desc.textContent = featured.description;
+    if (caption) {
+      caption.textContent = [featured.dateLabel, featured.timeLabel, featured.venue].filter(Boolean).join(" · ");
+    }
+    if (tracksEl && Array.isArray(featured.tracks) && featured.tracks.length) {
+      tracksEl.innerHTML = featured.tracks
+        .slice(0, 4)
+        .map((t, i) => `<div class="track-item"><strong>0${i + 1} · ${escapeHtml(t.title)}</strong><span>${escapeHtml(t.detail)}</span></div>`)
+        .join("");
+    }
+  } catch {
+    // keep static fallback intact
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initHeaderAndDrawer();
   initAuthHeaderBadge();
   initNewsletterForms();
+  initHomeSummitSync();
 });
